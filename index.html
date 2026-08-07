@@ -433,7 +433,7 @@ const CONFIG = {
   .row .name{font-weight:500;}
   .row .unit{font-family:var(--font-mono);font-size:11px;color:var(--ink-soft);letter-spacing:.02em;margin-top:1px;}
   .cat-name-edit{
-    flex:1 1 auto;font-family:var(--font-display);font-weight:700;font-size:13px;
+    flex:1 1 auto;font-family:var(--font-display);font-weight:700;font-size:16px;
     text-transform:uppercase;letter-spacing:.1em;color:var(--accent-deep);
     border:1px dashed var(--line-strong);border-radius:var(--radius);
     padding:6px 8px;background:#fff;margin-right:10px;
@@ -467,12 +467,13 @@ const CONFIG = {
     font-family:var(--font-mono);font-size:10px;letter-spacing:.12em;
     text-transform:uppercase;color:var(--ink-soft);margin-right:2px;
   }
+  /* Every text box below sits at 16px: iOS auto-zooms the page on any input under 16px. */
   .qtybox input{
-    width:46px;text-align:center;
+    width:52px;text-align:center;
     font-family:var(--font-mono);
     border:1px solid var(--line-strong);
     border-radius:var(--radius);
-    padding:4px 2px;font-size:14px;background:#fff;color:var(--ink);
+    padding:4px 2px;font-size:16px;background:#fff;color:var(--ink);
   }
 
   /* ---- Estimate slip ---- */
@@ -535,7 +536,7 @@ const CONFIG = {
   .field label{display:block;font-size:11px;color:var(--ink-soft);margin-bottom:3px;font-family:var(--font-mono);letter-spacing:.03em;}
   .field input,.field textarea{
     width:100%;border:1px solid var(--line-strong);border-radius:var(--radius);
-    padding:7px 9px;font-family:var(--font-body);font-size:14px;background:#fff;color:var(--ink);
+    padding:7px 9px;font-family:var(--font-body);font-size:16px;background:#fff;color:var(--ink);
   }
   .field textarea{resize:vertical;min-height:44px;}
 
@@ -564,7 +565,7 @@ const CONFIG = {
   body.editing .row .info,body.editing .row .price,body.editing .row .tick,body.editing .row .qtybox{display:none;}
   body.editing .row .edit-fields{display:flex;}
   body.editing .row{background:var(--panel);border:1px dashed var(--line-strong);border-radius:var(--radius);margin-bottom:6px;}
-  .edit-fields input{border:1px solid var(--line-strong);border-radius:var(--radius);padding:6px 8px;font-size:13px;font-family:var(--font-body);background:#fff;color:var(--ink);}
+  .edit-fields input{border:1px solid var(--line-strong);border-radius:var(--radius);padding:6px 8px;font-size:16px;font-family:var(--font-body);background:#fff;color:var(--ink);}
   .ef-name{flex:1 1 180px;}
   .ef-price{width:80px;font-family:var(--font-mono);}
   .ef-unit{width:110px;}
