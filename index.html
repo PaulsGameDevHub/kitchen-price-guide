@@ -331,9 +331,11 @@ const CONFIG = {
   }
 
   *{box-sizing:border-box;}
-  html{-webkit-text-size-adjust:100%;}
+  /* manipulation = no double-tap-to-zoom and no 300ms tap delay. Pinch-zoom still works. */
+  html{-webkit-text-size-adjust:100%;touch-action:manipulation;}
   body{
     margin:0;
+    touch-action:manipulation;
     background:var(--paper);
     color:var(--ink);
     font-family:var(--font-body);
@@ -342,6 +344,10 @@ const CONFIG = {
     -webkit-font-smoothing:antialiased;
   }
   h1,h2,h3{font-family:var(--font-display);margin:0;letter-spacing:-.01em;}
+  /* Repeated on the tap targets: some browsers only honour touch-action on the element hit. */
+  .row,.tick,.qtybox,.qtybox button,.btn,.owner-btn,.vat-toggle,.mbar button,.add-svc,.et-opt,.edit-toolbar button{
+    touch-action:manipulation;
+  }
 
   .wrap{max-width:1120px;margin:0 auto;padding:28px 20px 140px;}
 
