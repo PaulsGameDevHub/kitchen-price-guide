@@ -25,6 +25,8 @@ const CONFIG = {
     "phone": "123"
   },
   "currency": "£",
+  "showVat": true,
+  "showSendButton": true,
   "vat": {
     "enabled": true,
     "rate": 20,
@@ -572,6 +574,13 @@ const CONFIG = {
   .edit-toolbar{display:none;background:var(--ink);color:var(--paper);padding:14px 18px;border-radius:var(--radius);margin-bottom:24px;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;}
   body.editing .edit-toolbar{display:flex;}
   .edit-toolbar p{margin:0;font-size:13px;color:#cdd8d5;max-width:60ch;}
+  .edit-toolbar .et-right{display:flex;align-items:center;gap:18px;flex-wrap:wrap;}
+  .edit-toolbar .et-opts{display:flex;flex-direction:column;gap:6px;}
+  .edit-toolbar .et-opt{
+    display:flex;align-items:center;gap:7px;cursor:pointer;user-select:none;
+    font-family:var(--font-mono);font-size:12px;letter-spacing:.03em;color:#cdd8d5;white-space:nowrap;
+  }
+  .edit-toolbar .et-opt input{width:15px;height:15px;accent-color:var(--accent);cursor:pointer;margin:0;}
   .edit-toolbar .et-actions{display:flex;gap:8px;}
   .edit-toolbar button{font-family:var(--font-display);font-weight:600;font-size:13px;padding:9px 14px;border-radius:var(--radius);cursor:pointer;border:none;}
   .et-export{background:var(--accent);color:#fff;}
@@ -634,9 +643,15 @@ const CONFIG = {
 
     <div class="edit-toolbar">
       <p>Editing mode — change any name, price or unit, add jobs or categories. Nothing is saved automatically, so hit <strong>Export price list</strong> and paste the result back into your file to keep changes.</p>
-      <div class="et-actions">
-        <button class="et-add-cat" id="addCatBtn">+ Category</button>
-        <button class="et-export" id="exportBtn">Export price list</button>
+      <div class="et-right">
+        <div class="et-opts">
+          <label class="et-opt"><input type="checkbox" id="optVat">Show VAT</label>
+          <label class="et-opt"><input type="checkbox" id="optSend">Show send button</label>
+        </div>
+        <div class="et-actions">
+          <button class="et-add-cat" id="addCatBtn">+ Category</button>
+          <button class="et-export" id="exportBtn">Export price list</button>
+        </div>
       </div>
     </div>
 
@@ -705,7 +720,7 @@ const CONFIG = {
   <div class="modal-bg" id="modalBg">
     <div class="modal">
       <h3>Export your price list</h3>
-      <p>Copy everything below and paste it into your <code>price-guide.html</code> file, replacing the block between <code>PRICE LIST START</code> and <code>PRICE LIST END</code>. Re-upload the file to update the live page for everyone.</p>
+      <p>Copy everything below and paste it into <code>index.html</code>, replacing the block between <code>PRICE LIST START</code> and <code>PRICE LIST END</code>. Commit the file on GitHub and the live page updates for everyone about a minute later.</p>
       <textarea id="exportText" readonly></textarea>
       <div class="m-actions">
         <button class="btn ghost" id="modalClose">Close</button>
@@ -922,7 +937,10 @@ const CONFIG = {
   }
   function totalNow(){ return Object.keys(state).reduce((t,id)=> t + (meta[id]?lineTotal(meta[id],state[id]):0),0); }
 
-  function vatOn(){ return !!(CONFIG.vat && $('#vatToggle').checked); }
+  // vatShown = the option exists on the page at all; vatOn = it exists AND the customer has it ticked.
+  function vatShown(){ return !!(CONFIG.vat && CONFIG.showVat !== false); }
+  function sendShown(){ return CONFIG.showSendButton !== false; }
+  function vatOn(){ return vatShown() && $('#vatToggle').checked; }
   function vatRate(){ return (CONFIG.vat && CONFIG.vat.rate) || 20; }
   function vatBreakdown(net){
     const vat = vatOn() ? Math.round(net * vatRate()) / 100 : 0;
@@ -1040,9 +1058,30 @@ const CONFIG = {
   });
 
   if (CONFIG.formKey) $('#emailHint').textContent = 'Sends straight to us — no email app needed.';
-  if (!CONFIG.vat){ $('#vatToggleWrap').style.display='none'; $('#vatRows').classList.add('hide'); }
-  else { $('#vatToggle').checked = CONFIG.vat.enabled !== false; }
+  if (CONFIG.vat) $('#vatToggle').checked = CONFIG.vat.enabled !== false;
   $('#vatToggle').addEventListener('change', ()=>recompute());
+
+  // Show or hide whole features. Both switches live in the edit toolbar and export with the price list.
+  function applyOptions(){
+    const showVat = vatShown();
+    $('#vatToggleWrap').style.display = showVat ? '' : 'none';
+    if (!showVat) $('#vatRows').classList.add('hide');
+    const showSend = sendShown();
+    $('#emailBtn').style.display = showSend ? '' : 'none';
+    $('#emailHint').style.display = showSend ? '' : 'none';
+    $('#optVat').checked = showVat;
+    $('#optSend').checked = showSend;
+  }
+  $('#optVat').addEventListener('change', e=>{
+    CONFIG.showVat = e.target.checked;
+    if (e.target.checked && !CONFIG.vat) CONFIG.vat = { enabled:true, rate:20, label:'VAT' };
+    applyOptions(); recompute();
+  });
+  $('#optSend').addEventListener('change', e=>{
+    CONFIG.showSendButton = e.target.checked;
+    applyOptions();
+  });
+  applyOptions();
 
   $('#mScroll').addEventListener('click', ()=>{ $('.slip-wrap').scrollIntoView({behavior:'smooth'}); });
 
