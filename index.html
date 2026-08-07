@@ -1,0 +1,1114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Estimate Builder</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=Instrument+Sans:wght@400;500;600&family=Spline+Sans+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<!-- ============================================================
+     PRICE LIST  —  edit this block to change your prices,
+     or use the "Edit prices" button on the page and Export.
+     ============================================================ -->
+<script>
+/* === PRICE LIST START === */
+const CONFIG = {
+  "business": "Kitchen Supplementary Work",
+  "brandline": "Price guide & estimate builder",
+  "tagline": "Tick the jobs you need, set how many, and get a rough figure in seconds.",
+  "ownerEmail": "sandhillkitchens@gmail.com",
+  "formKey": "52d3c963-0dbc-494b-b0e7-48e50a94b6b3",
+  "editUnlock": {
+    "name": "kitchenprices",
+    "phone": "123"
+  },
+  "currency": "£",
+  "vat": {
+    "enabled": true,
+    "rate": 20,
+    "label": "VAT"
+  },
+  "disclaimer": "This is a rough guide only, not a fixed quote. Final pricing depends on a proper look at the job.",
+  "callout": "Prices shown are typical. Bigger or trickier jobs may vary.",
+  "categories": [
+    {
+      "name": "Plastering — Per Square meter",
+      "services": [
+        {
+          "id": "plaster-tiled",
+          "name": "Plaster Wall",
+          "price": 24,
+          "unit": "per m²",
+          "qty": true
+        },
+        {
+          "id": "skim-wall",
+          "name": "Plaster Ceiling",
+          "price": 24,
+          "unit": "per m²",
+          "qty": true
+        },
+        {
+          "id": "board-skim",
+          "name": "Plasterboard repair",
+          "price": 60,
+          "unit": "per m²",
+          "qty": true
+        },
+        {
+          "id": "over-board",
+          "name": "Overboard and skim a ceiling",
+          "price": 70,
+          "unit": "per m²",
+          "qty": true
+        },
+        {
+          "id": "patch",
+          "name": "Patch repair (small area)",
+          "price": 60,
+          "unit": "per m²",
+          "qty": true
+        },
+        {
+          "id": "beads",
+          "name": "Fit corner beads or reveals",
+          "price": 35,
+          "unit": "per corner",
+          "qty": true
+        }
+      ]
+    },
+    {
+      "name": "Flooring — Per Square meter",
+      "services": [
+        {
+          "id": "floor-level",
+          "name": "Floor levelling compound or plywood",
+          "price": 30,
+          "unit": "per m²",
+          "qty": true
+        },
+        {
+          "id": "laminate",
+          "name": "Laminate or similar floor laying",
+          "price": 40,
+          "unit": "per m²",
+          "qty": true
+        }
+      ]
+    },
+    {
+      "name": "Building Work",
+      "services": [
+        {
+          "id": "wall-tile-removal",
+          "name": "Wall tile removal",
+          "price": 26,
+          "unit": "per m²",
+          "qty": true
+        },
+        {
+          "id": "floor-tile-removal",
+          "name": "Floor tile removal",
+          "price": 36,
+          "unit": "per m²",
+          "qty": true
+        },
+        {
+          "id": "windowsill",
+          "name": "Windowsill install / remove",
+          "price": 75,
+          "unit": "per windowsill",
+          "qty": true
+        },
+        {
+          "id": "vent-hood",
+          "name": "Vent cooker hood",
+          "price": 80,
+          "unit": "per hood",
+          "qty": true
+        },
+        {
+          "id": "svc-qxis6",
+          "name": "Fit an extractor fan (wall fan)",
+          "price": 180,
+          "unit": "each",
+          "qty": true
+        }
+      ]
+    },
+    {
+      "name": "Appliances & Kitchen Units",
+      "services": [
+        {
+          "id": "install-appl",
+          "name": "Install customer-supplied appliance",
+          "price": 70,
+          "unit": "per appliance",
+          "qty": true,
+          "note": "Connection not included"
+        },
+        {
+          "id": "connect-appl",
+          "name": "Connection of appliances",
+          "price": 35,
+          "unit": "per appliance",
+          "qty": true
+        },
+        {
+          "id": "modify-unit",
+          "name": "Modify a kitchen unit",
+          "price": 60,
+          "unit": "per unit",
+          "qty": true
+        },
+        {
+          "id": "fridge-door",
+          "name": "Swap fridge/freezer door hanging",
+          "price": 40,
+          "unit": "per appliance",
+          "qty": true
+        },
+        {
+          "id": "worktop-edge",
+          "name": "Router and edge worktop",
+          "price": 60,
+          "unit": "per edge",
+          "qty": true
+        }
+      ]
+    },
+    {
+      "name": "Plumbing & Gas",
+      "services": [
+        {
+          "id": "plumb-alter",
+          "name": "Alteration of plumbing for sink and appliances",
+          "price": 180,
+          "unit": "per job",
+          "qty": true
+        },
+        {
+          "id": "hot-tap",
+          "name": "Connection of hot water tap",
+          "price": 150,
+          "unit": "per tap",
+          "qty": true,
+          "note": "Includes electrical and plumbing"
+        },
+        {
+          "id": "radiator",
+          "name": "Install or move customer-supplied radiator",
+          "price": 200,
+          "unit": "per radiator",
+          "qty": true
+        },
+        {
+          "id": "gas-disc",
+          "name": "Disconnection of gas",
+          "price": 100,
+          "unit": "per job",
+          "qty": true
+        },
+        {
+          "id": "gas-hob",
+          "name": "Connection of gas hob",
+          "price": 180,
+          "unit": "per hob",
+          "qty": true
+        },
+        {
+          "id": "svc-rnowr",
+          "name": "Install customer-supplied sink",
+          "price": 90,
+          "unit": "per sink",
+          "qty": true
+        },
+        {
+          "id": "svc-4aae8",
+          "name": "Install customer-supplied tap",
+          "price": 75,
+          "unit": "per tap",
+          "qty": true
+        }
+      ]
+    },
+    {
+      "name": "Electrical",
+      "services": [
+        {
+          "id": "fuse-supply",
+          "name": "New supply from fuse board",
+          "price": 120,
+          "unit": "per appliance",
+          "qty": true
+        },
+        {
+          "id": "svc-6tyfb",
+          "name": "Supply and install new fuse board",
+          "price": 900,
+          "unit": "each",
+          "qty": true
+        },
+        {
+          "id": "double-socket",
+          "name": "Move or add new double socket above bench",
+          "price": 55,
+          "unit": "per socket",
+          "qty": true
+        },
+        {
+          "id": "svc-1quy5",
+          "name": "Fit an outdoor socket",
+          "price": 140,
+          "unit": "each",
+          "qty": true
+        },
+        {
+          "id": "svc-obf1g",
+          "name": "Upgrade socket to usb outlet",
+          "price": 55,
+          "unit": "per socket",
+          "qty": true
+        },
+        {
+          "id": "svc-nlcc1",
+          "name": "Replace socket / switch faceplate",
+          "price": 25,
+          "unit": "per socket",
+          "qty": true
+        },
+        {
+          "id": "ceiling-light",
+          "name": "Supply and install ceiling spot lights",
+          "price": 55,
+          "unit": "per light",
+          "qty": true
+        },
+        {
+          "id": "svc-b1fvi",
+          "name": "Add or move a light fitting",
+          "price": 85,
+          "unit": "per light",
+          "qty": true
+        },
+        {
+          "id": "under-lights",
+          "name": "Connection of under-unit lights",
+          "price": 75,
+          "unit": "per zone",
+          "qty": true
+        }
+      ]
+    }
+  ]
+};
+/* === PRICE LIST END === */
+</script>
+
+<style>
+  :root{
+    --paper:#EFF1EC;
+    --panel:#F7F8F5;
+    --panel-2:#E7EAE3;
+    --ink:#1C2422;
+    --ink-soft:#586059;
+    --line:#CDD3CA;
+    --line-strong:#AEB6AB;
+    --accent:#0E6E67;
+    --accent-deep:#0A4B46;
+    --accent-wash:#DBEAE7;
+    --warn:#B24A2E;
+    --font-display:'Archivo', system-ui, sans-serif;
+    --font-body:'Instrument Sans', system-ui, sans-serif;
+    --font-mono:'Spline Sans Mono', ui-monospace, monospace;
+    --radius:4px;
+    --shadow:0 1px 2px rgba(28,36,34,.06), 0 8px 24px rgba(28,36,34,.06);
+  }
+
+  *{box-sizing:border-box;}
+  html{-webkit-text-size-adjust:100%;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:var(--font-body);
+    font-size:16px;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{font-family:var(--font-display);margin:0;letter-spacing:-.01em;}
+
+  .wrap{max-width:1120px;margin:0 auto;padding:28px 20px 140px;}
+
+  /* ---- Header ---- */
+  header.top{
+    border-bottom:2px solid var(--ink);
+    padding-bottom:18px;
+    margin-bottom:26px;
+    display:flex;
+    flex-wrap:wrap;
+    align-items:flex-end;
+    justify-content:space-between;
+    gap:16px;
+  }
+  .brandline{
+    font-family:var(--font-mono);
+    font-size:11px;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    color:var(--accent-deep);
+    margin-bottom:8px;
+  }
+  header.top h1{font-size:clamp(28px,5vw,44px);font-weight:800;line-height:1.02;}
+  header.top .tagline{color:var(--ink-soft);margin-top:8px;max-width:46ch;}
+  .owner-btn{
+    font-family:var(--font-mono);
+    font-size:12px;
+    letter-spacing:.04em;
+    background:none;
+    border:1px solid var(--line-strong);
+    color:var(--ink-soft);
+    padding:7px 12px;
+    border-radius:var(--radius);
+    cursor:pointer;
+    white-space:nowrap;
+    transition:all .15s;
+  }
+  .owner-btn:hover{border-color:var(--ink);color:var(--ink);}
+  .owner-btn.active{background:var(--ink);color:var(--paper);border-color:var(--ink);}
+
+  /* ---- Layout ---- */
+  .grid{display:grid;grid-template-columns:1fr 360px;gap:34px;align-items:start;}
+  @media(max-width:860px){ .grid{grid-template-columns:1fr;gap:26px;} }
+
+  /* ---- Categories ---- */
+  .cat{margin-bottom:30px;}
+  .cat > h2{
+    font-size:13px;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:.14em;
+    color:var(--accent-deep);
+    padding-bottom:8px;
+    border-bottom:1px solid var(--line);
+    margin-bottom:4px;
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+  }
+  .cat-count{font-family:var(--font-mono);font-size:11px;color:var(--ink-soft);letter-spacing:0;}
+
+  .row{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    padding:13px 6px;
+    border-bottom:1px solid var(--line);
+    cursor:pointer;
+  }
+  .row:last-child{border-bottom:none;}
+  .row.on{background:var(--accent-wash);border-radius:var(--radius);border-bottom-color:transparent;}
+  .row.on + .row{border-top:1px solid var(--line);}
+
+  /* custom tick box */
+  .tick{
+    flex:0 0 auto;
+    width:22px;height:22px;
+    border:2px solid var(--line-strong);
+    border-radius:5px;
+    display:grid;place-items:center;
+    background:var(--panel);
+    transition:all .12s;
+  }
+  .row.on .tick{background:var(--accent);border-color:var(--accent);}
+  .tick svg{width:13px;height:13px;stroke:#fff;stroke-width:3;fill:none;opacity:0;transition:opacity .12s;}
+  .row.on .tick svg{opacity:1;}
+
+  .row .info{flex:1 1 auto;min-width:0;}
+  .row .name{font-weight:500;}
+  .row .unit{font-family:var(--font-mono);font-size:11px;color:var(--ink-soft);letter-spacing:.02em;margin-top:1px;}
+  .cat-name-edit{
+    flex:1 1 auto;font-family:var(--font-display);font-weight:700;font-size:13px;
+    text-transform:uppercase;letter-spacing:.1em;color:var(--accent-deep);
+    border:1px dashed var(--line-strong);border-radius:var(--radius);
+    padding:6px 8px;background:#fff;margin-right:10px;
+  }
+  .cat-del{
+    font-family:var(--font-mono);font-size:11px;letter-spacing:.04em;
+    background:none;border:1px solid var(--warn);color:var(--warn);
+    border-radius:var(--radius);padding:6px 10px;cursor:pointer;white-space:nowrap;
+  }
+  .cat-del:hover{background:var(--warn);color:#fff;}
+  .row .note{font-size:12px;color:var(--ink-soft);font-style:italic;margin-top:2px;}
+  .ef-tier-lbl{font-family:var(--font-mono);font-size:11px;color:var(--ink-soft);white-space:nowrap;}
+  .row .price{
+    font-family:var(--font-mono);
+    font-weight:500;
+    white-space:nowrap;
+    font-variant-numeric:tabular-nums;
+  }
+
+  .qtybox{display:flex;align-items:center;gap:6px;}
+  .qtybox button{
+    width:26px;height:26px;line-height:1;
+    border:1px solid var(--line-strong);
+    background:var(--panel);
+    border-radius:var(--radius);
+    font-size:16px;cursor:pointer;color:var(--ink);
+    font-family:var(--font-mono);
+  }
+  .qtybox button:hover{border-color:var(--ink);}
+  .qty-lbl{
+    font-family:var(--font-mono);font-size:10px;letter-spacing:.12em;
+    text-transform:uppercase;color:var(--ink-soft);margin-right:2px;
+  }
+  .qtybox input{
+    width:46px;text-align:center;
+    font-family:var(--font-mono);
+    border:1px solid var(--line-strong);
+    border-radius:var(--radius);
+    padding:4px 2px;font-size:14px;background:#fff;color:var(--ink);
+  }
+
+  /* ---- Estimate slip ---- */
+  .slip-wrap{position:sticky;top:20px;}
+  .slip{
+    background:var(--panel);
+    border:1px solid var(--line-strong);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    overflow:hidden;
+  }
+  .slip .slip-head{
+    background:var(--ink);
+    color:var(--paper);
+    padding:16px 18px;
+    display:flex;justify-content:space-between;align-items:baseline;
+  }
+  .slip .slip-head h2{font-size:15px;letter-spacing:.1em;text-transform:uppercase;}
+  .slip .ref{font-family:var(--font-mono);font-size:11px;color:#9fb0ac;}
+
+  .slip-body{padding:16px 18px;}
+  .empty{color:var(--ink-soft);font-size:14px;text-align:center;padding:18px 0;}
+  .empty span{display:block;font-family:var(--font-mono);font-size:22px;color:var(--line-strong);margin-bottom:6px;}
+
+  .li{
+    display:flex;justify-content:space-between;gap:10px;
+    padding:9px 0;border-bottom:1px dashed var(--line);
+    font-size:14px;
+  }
+  .li:last-child{border-bottom:none;}
+  .li .li-name{color:var(--ink);}
+  .li .li-sub{font-family:var(--font-mono);font-size:11px;color:var(--ink-soft);}
+  .li .li-amt{font-family:var(--font-mono);font-variant-numeric:tabular-nums;white-space:nowrap;}
+
+  .total{
+    display:flex;justify-content:space-between;align-items:baseline;
+    margin-top:14px;padding-top:14px;border-top:2px solid var(--ink);
+  }
+  .total .lbl{font-family:var(--font-display);font-weight:700;text-transform:uppercase;letter-spacing:.08em;font-size:13px;}
+  .total .amt{font-family:var(--font-mono);font-weight:600;font-size:26px;color:var(--accent-deep);font-variant-numeric:tabular-nums;}
+
+  .vat-rows{margin-top:12px;padding-top:10px;border-top:1px solid var(--line);}
+  .vat-rows.hide{display:none;}
+  .vat-row{
+    display:flex;justify-content:space-between;font-size:13px;
+    color:var(--ink-soft);padding:3px 0;
+    font-family:var(--font-mono);font-variant-numeric:tabular-nums;
+  }
+  .vat-toggle{
+    display:flex;align-items:center;gap:8px;margin-top:10px;cursor:pointer;
+    font-size:13px;color:var(--ink-soft);user-select:none;
+  }
+  .vat-toggle input{width:16px;height:16px;accent-color:var(--accent);cursor:pointer;margin:0;}
+  .callout-note{font-size:12px;color:var(--ink-soft);margin-top:10px;line-height:1.4;}
+
+  /* details fields */
+  .details{margin-top:16px;padding-top:14px;border-top:1px solid var(--line);}
+  .details h3{font-size:12px;text-transform:uppercase;letter-spacing:.12em;color:var(--ink-soft);margin-bottom:10px;font-weight:600;}
+  .field{margin-bottom:9px;}
+  .field label{display:block;font-size:11px;color:var(--ink-soft);margin-bottom:3px;font-family:var(--font-mono);letter-spacing:.03em;}
+  .field input,.field textarea{
+    width:100%;border:1px solid var(--line-strong);border-radius:var(--radius);
+    padding:7px 9px;font-family:var(--font-body);font-size:14px;background:#fff;color:var(--ink);
+  }
+  .field textarea{resize:vertical;min-height:44px;}
+
+  .actions{display:flex;flex-direction:column;gap:9px;margin-top:16px;}
+  .btn{
+    font-family:var(--font-display);font-weight:600;font-size:14px;
+    padding:12px 14px;border-radius:var(--radius);cursor:pointer;border:1px solid transparent;
+    display:flex;align-items:center;justify-content:center;gap:8px;transition:all .15s;letter-spacing:.01em;
+  }
+  .btn.primary{background:var(--accent);color:#fff;}
+  .btn.primary:hover{background:var(--accent-deep);}
+  .btn.ghost{background:transparent;color:var(--ink);border-color:var(--line-strong);}
+  .btn.ghost:hover{border-color:var(--ink);}
+  .btn:disabled{opacity:.45;cursor:not-allowed;}
+  .btn svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;}
+
+  .btn-hint{
+    font-size:11px;color:var(--ink-soft);margin:-3px 0 2px;
+    text-align:center;line-height:1.4;
+  }
+  .disclaim{font-size:11px;color:var(--ink-soft);margin-top:16px;line-height:1.45;border-top:1px solid var(--line);padding-top:12px;}
+
+  /* ---- Edit mode ---- */
+  body.editing .row{cursor:default;}
+  .edit-fields{display:none;gap:8px;flex-wrap:wrap;align-items:center;width:100%;}
+  body.editing .row .info,body.editing .row .price,body.editing .row .tick,body.editing .row .qtybox{display:none;}
+  body.editing .row .edit-fields{display:flex;}
+  body.editing .row{background:var(--panel);border:1px dashed var(--line-strong);border-radius:var(--radius);margin-bottom:6px;}
+  .edit-fields input{border:1px solid var(--line-strong);border-radius:var(--radius);padding:6px 8px;font-size:13px;font-family:var(--font-body);background:#fff;color:var(--ink);}
+  .ef-name{flex:1 1 180px;}
+  .ef-price{width:80px;font-family:var(--font-mono);}
+  .ef-unit{width:110px;}
+  .ef-del{background:none;border:none;color:var(--warn);cursor:pointer;font-size:18px;line-height:1;padding:4px;}
+  .add-svc{font-family:var(--font-mono);font-size:12px;color:var(--accent-deep);background:none;border:1px dashed var(--line-strong);border-radius:var(--radius);padding:7px 10px;cursor:pointer;margin-top:8px;}
+  .add-svc:hover{border-color:var(--accent);}
+  .edit-toolbar{display:none;background:var(--ink);color:var(--paper);padding:14px 18px;border-radius:var(--radius);margin-bottom:24px;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;}
+  body.editing .edit-toolbar{display:flex;}
+  .edit-toolbar p{margin:0;font-size:13px;color:#cdd8d5;max-width:60ch;}
+  .edit-toolbar .et-actions{display:flex;gap:8px;}
+  .edit-toolbar button{font-family:var(--font-display);font-weight:600;font-size:13px;padding:9px 14px;border-radius:var(--radius);cursor:pointer;border:none;}
+  .et-export{background:var(--accent);color:#fff;}
+  .et-add-cat{background:transparent;color:var(--paper);border:1px solid #4a5450 !important;}
+
+  /* export modal */
+  .modal-bg{display:none;position:fixed;inset:0;background:rgba(20,26,24,.55);z-index:50;align-items:center;justify-content:center;padding:20px;}
+  .modal-bg.show{display:flex;}
+  .modal{background:var(--paper);border-radius:var(--radius);max-width:640px;width:100%;padding:24px;box-shadow:0 20px 60px rgba(0,0,0,.3);}
+  .modal h3{font-size:18px;margin-bottom:8px;}
+  .modal p{font-size:13px;color:var(--ink-soft);margin:0 0 14px;line-height:1.5;}
+  .modal textarea{width:100%;height:220px;font-family:var(--font-mono);font-size:12px;border:1px solid var(--line-strong);border-radius:var(--radius);padding:12px;background:#fff;color:var(--ink);resize:vertical;}
+  .modal .m-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:14px;}
+
+  /* mobile sticky total */
+  .mbar{display:none;}
+  @media(max-width:860px){
+    .slip-wrap{position:static;}
+    .mbar{
+      display:flex;position:fixed;left:0;right:0;bottom:0;z-index:30;
+      background:var(--ink);color:var(--paper);padding:12px 18px;
+      align-items:center;justify-content:space-between;gap:14px;
+      box-shadow:0 -4px 20px rgba(0,0,0,.15);
+    }
+    .mbar .m-total{font-family:var(--font-mono);font-weight:600;font-size:20px;}
+    .mbar .m-total small{display:block;font-size:10px;letter-spacing:.1em;color:#9fb0ac;text-transform:uppercase;font-weight:400;}
+    .mbar button{font-family:var(--font-display);font-weight:600;background:var(--accent);color:#fff;border:none;border-radius:var(--radius);padding:10px 16px;font-size:14px;}
+  }
+
+  /* toast */
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--paper);padding:12px 20px;border-radius:var(--radius);font-size:14px;opacity:0;pointer-events:none;transition:all .25s;z-index:60;}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+  /* print */
+  #printDoc{display:none;}
+  @media print{
+    body{background:#fff;}
+    .wrap,header.top,.grid,.mbar,.owner-btn,.edit-toolbar{display:none !important;}
+    #printDoc{display:block;padding:0;color:#000;font-family:var(--font-body);}
+    #printDoc .p-head{display:flex;justify-content:space-between;border-bottom:2px solid #000;padding-bottom:12px;margin-bottom:16px;}
+    #printDoc h1{font-family:var(--font-display);font-size:26px;}
+    #printDoc .p-line{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #ccc;font-size:14px;}
+    #printDoc .p-total{display:flex;justify-content:space-between;margin-top:14px;padding-top:12px;border-top:2px solid #000;font-family:var(--font-display);font-weight:700;font-size:18px;}
+    #printDoc .p-meta{font-size:12px;color:#444;margin-top:2px;}
+    #printDoc .p-disc{font-size:11px;color:#555;margin-top:24px;border-top:1px solid #ccc;padding-top:10px;}
+    #printDoc .p-cust{font-size:13px;margin-top:14px;}
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="top">
+      <div>
+        <div class="brandline" id="brandline">Estimate builder</div>
+        <h1 id="bizName">Your Business</h1>
+        <p class="tagline" id="tagline"></p>
+      </div>
+      <button class="owner-btn" id="ownerBtn" hidden>Edit prices</button>
+    </header>
+
+    <div class="edit-toolbar">
+      <p>Editing mode — change any name, price or unit, add jobs or categories. Nothing is saved automatically, so hit <strong>Export price list</strong> and paste the result back into your file to keep changes.</p>
+      <div class="et-actions">
+        <button class="et-add-cat" id="addCatBtn">+ Category</button>
+        <button class="et-export" id="exportBtn">Export price list</button>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="services" id="services"></div>
+
+      <div class="slip-wrap">
+        <div class="slip">
+          <div class="slip-head">
+            <h2>Your estimate</h2>
+            <span class="ref" id="ref"></span>
+          </div>
+          <div class="slip-body">
+            <div id="lines"></div>
+            <div class="vat-rows" id="vatRows">
+              <div class="vat-row"><span>Subtotal</span><span id="netAmt">£0</span></div>
+              <div class="vat-row"><span id="vatLabel">VAT @ 20%</span><span id="vatAmt">£0</span></div>
+            </div>
+            <div class="total">
+              <span class="lbl" id="totalLbl">Rough total</span>
+              <span class="amt" id="totalAmt">£0</span>
+            </div>
+            <label class="vat-toggle" id="vatToggleWrap">
+              <input type="checkbox" id="vatToggle" checked>
+              <span id="vatToggleLbl">Add 20% VAT</span>
+            </label>
+            <p class="callout-note" id="callout"></p>
+
+            <div class="details">
+              <h3>Your details (optional)</h3>
+              <div class="field"><label>Name</label><input id="cName" type="text" autocomplete="name"></div>
+              <div class="field"><label>Phone</label><input id="cPhone" type="tel" autocomplete="tel"></div>
+              <div class="field"><label>Email</label><input id="cEmail" type="email" autocomplete="email"></div>
+              <div class="field"><label>Notes</label><textarea id="cNotes"></textarea></div>
+            </div>
+
+            <div class="actions">
+              <button class="btn primary" id="printBtn">
+                <svg viewBox="0 0 24 24"><path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2M6 14h12v8H6z"/></svg>
+                Save / print as PDF
+              </button>
+              <button class="btn ghost" id="emailBtn">
+                <svg viewBox="0 0 24 24"><path d="M4 4h16v16H4zM4 6l8 6 8-6"/></svg>
+                Send this estimate to us
+              </button>
+              <p class="btn-hint" id="emailHint">Opens your email app with the details filled in.</p>
+              <button class="btn ghost" id="copyBtn">
+                <svg viewBox="0 0 24 24"><path d="M9 9h11v11H9zM5 15H4V4h11v1"/></svg>
+                Copy as text
+              </button>
+            </div>
+            <p class="disclaim" id="disclaim"></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mbar">
+    <div class="m-total"><small>Rough total</small><span id="mTotal">£0</span></div>
+    <button id="mScroll">View estimate</button>
+  </div>
+
+  <div id="printDoc"></div>
+
+  <div class="modal-bg" id="modalBg">
+    <div class="modal">
+      <h3>Export your price list</h3>
+      <p>Copy everything below and paste it into your <code>price-guide.html</code> file, replacing the block between <code>PRICE LIST START</code> and <code>PRICE LIST END</code>. Re-upload the file to update the live page for everyone.</p>
+      <textarea id="exportText" readonly></textarea>
+      <div class="m-actions">
+        <button class="btn ghost" id="modalClose">Close</button>
+        <button class="btn primary" id="modalCopy">Copy to clipboard</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  const $ = s => document.querySelector(s);
+  const cur = () => CONFIG.currency;
+  const fmt = n => cur() + Number(n).toLocaleString('en-GB', {maximumFractionDigits:0});
+
+  // Tiered jobs: `price` covers the first `tier.upTo` units, then `tier.after` each.
+  function lineTotal(svc, qty){
+    if (svc.tier) return qty <= svc.tier.upTo ? svc.price : svc.price + (qty - svc.tier.upTo) * svc.tier.after;
+    return svc.price * qty;
+  }
+  function priceLabel(svc){
+    if (svc.tier) return fmt(svc.price) + ' first ' + svc.tier.upTo + ' ' + svc.unit.replace(/^per /,'') +
+                          ', then ' + fmt(svc.tier.after) + ' ' + svc.unit;
+    return fmt(svc.price) + ' · ' + svc.unit;
+  }
+  const state = {};          // id -> qty
+  const meta = {};           // id -> {name, price, unit, qty}
+  let editing = false;
+  const ref = 'EST-' + Math.random().toString(36).slice(2,6).toUpperCase() + '-' +
+              new Date().toISOString().slice(2,10).replace(/-/g,'');
+
+  // ---- header ----
+  $('#bizName').textContent = CONFIG.business;
+  if (CONFIG.brandline) $('#brandline').textContent = CONFIG.brandline;
+  $('#tagline').textContent = CONFIG.tagline;
+  $('#callout').textContent = CONFIG.callout || '';
+  $('#disclaim').textContent = CONFIG.disclaimer;
+  $('#ref').textContent = ref;
+  document.title = CONFIG.business + ' — ' + (CONFIG.brandline || 'Estimate builder');
+
+  const svgTick = '<svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>';
+
+  function render(){
+    const wrap = $('#services');
+    wrap.innerHTML = '';
+    CONFIG.categories.forEach((cat, ci) => {
+      const block = document.createElement('div');
+      block.className = 'cat';
+      const h = document.createElement('h2');
+      if (editing){
+        const nameIn = document.createElement('input');
+        nameIn.className = 'cat-name-edit';
+        nameIn.value = cat.name;
+        nameIn.addEventListener('input', e=>{ cat.name = e.target.value; });
+        const delCat = document.createElement('button');
+        delCat.className = 'cat-del';
+        delCat.textContent = 'Delete category';
+        delCat.addEventListener('click', ()=>{
+          cat.services.forEach(s=>delete state[s.id]);
+          CONFIG.categories.splice(ci,1);
+          render(); recompute();
+        });
+        h.appendChild(nameIn); h.appendChild(delCat);
+      } else {
+        h.innerHTML = '<span>' + esc(cat.name) + '</span><span class="cat-count">' + cat.services.length + ' item' + (cat.services.length!==1?'s':'') + '</span>';
+      }
+      block.appendChild(h);
+
+      cat.services.forEach((svc, si) => {
+        meta[svc.id] = svc;
+        const row = document.createElement('div');
+        row.className = 'row' + (state[svc.id] ? ' on' : '');
+        row.dataset.id = svc.id;
+
+        // display side
+        row.innerHTML =
+          '<div class="tick">' + svgTick + '</div>' +
+          '<div class="info"><div class="name">' + esc(svc.name) + '</div>' +
+          '<div class="unit">' + esc(priceLabel(svc)) + '</div>' +
+          (svc.note ? '<div class="note">' + esc(svc.note) + '</div>' : '') + '</div>';
+
+        // qty controls (only when selected and qty allowed)
+        if (svc.qty){
+          const qb = document.createElement('div');
+          qb.className = 'qtybox';
+          qb.style.display = state[svc.id] ? 'flex' : 'none';
+          qb.innerHTML = '<span class="qty-lbl">Qty</span><button data-act="dec" aria-label="Fewer">–</button>' +
+                         '<input type="text" inputmode="numeric" aria-label="Quantity" value="'+(state[svc.id]||1)+'">' +
+                         '<button data-act="inc" aria-label="More">+</button>';
+          row.appendChild(qb);
+          qb.addEventListener('click', e=>{ e.stopPropagation(); });
+          qb.querySelector('[data-act="inc"]').addEventListener('click', ()=>changeQty(svc.id, 1));
+          qb.querySelector('[data-act="dec"]').addEventListener('click', ()=>changeQty(svc.id, -1));
+          qb.querySelector('input').addEventListener('input', e=>{
+            let v = parseInt(e.target.value.replace(/\D/g,'')) || 1;
+            state[svc.id] = v; recompute();
+          });
+        }
+        const price = document.createElement('div');
+        price.className = 'price';
+        price.textContent = svc.tier ? 'from ' + fmt(svc.price) : fmt(svc.price);
+        row.appendChild(price);
+
+        // edit fields
+        const ef = document.createElement('div');
+        ef.className = 'edit-fields';
+        ef.innerHTML =
+          '<input class="ef-name" value="'+escAttr(svc.name)+'" placeholder="Job name">' +
+          '<input class="ef-price" type="text" inputmode="numeric" value="'+svc.price+'">' +
+          '<input class="ef-unit" value="'+escAttr(svc.unit)+'" placeholder="unit">' +
+          (svc.tier ? '<span class="ef-tier-lbl">first '+svc.tier.upTo+', then</span>' +
+                      '<input class="ef-price ef-after" type="text" inputmode="numeric" value="'+svc.tier.after+'">' : '') +
+          '<button class="ef-del" title="Remove">✕</button>';
+        ef.querySelectorAll('input').forEach(inp=>inp.addEventListener('click',e=>e.stopPropagation()));
+        ef.querySelector('.ef-name').addEventListener('input', e=>{ svc.name = e.target.value; });
+        ef.querySelector('.ef-price').addEventListener('input', e=>{ svc.price = parseFloat(e.target.value.replace(/[^\d.]/g,''))||0; });
+        ef.querySelector('.ef-unit').addEventListener('input', e=>{ svc.unit = e.target.value; });
+        const efAfter = ef.querySelector('.ef-after');
+        if (efAfter) efAfter.addEventListener('input', e=>{ svc.tier.after = parseFloat(e.target.value.replace(/[^\d.]/g,''))||0; });
+        ef.querySelector('.ef-del').addEventListener('click', e=>{
+          e.stopPropagation();
+          cat.services.splice(si,1); delete state[svc.id]; render(); recompute();
+        });
+        row.appendChild(ef);
+
+        // select toggle
+        row.addEventListener('click', ()=>{
+          if (editing) return;
+          if (state[svc.id]) { delete state[svc.id]; }
+          else { state[svc.id] = svc.qty ? 1 : 1; }
+          row.classList.toggle('on', !!state[svc.id]);
+          const q = row.querySelector('.qtybox');
+          if (q) q.style.display = state[svc.id] ? 'flex' : 'none';
+          recompute();
+        });
+
+        block.appendChild(row);
+      });
+
+      // add-service button (edit mode)
+      if (editing){
+        const add = document.createElement('button');
+        add.className = 'add-svc';
+        add.textContent = '+ Add a job to ' + cat.name;
+        add.addEventListener('click', ()=>{
+          cat.services.push({ id:'svc-'+Math.random().toString(36).slice(2,7), name:'New job', price:0, unit:'each', qty:true });
+          render();
+        });
+        block.appendChild(add);
+      }
+
+      wrap.appendChild(block);
+    });
+  }
+
+  function changeQty(id, d){
+    const row = document.querySelector('.row[data-id="'+id+'"]');
+    let v = (state[id]||1) + d;
+    if (v < 1){                       // stepping below 1 deselects the job
+      delete state[id];
+      if (row){ row.classList.remove('on'); row.querySelector('.qtybox').style.display='none'; }
+      recompute(); return;
+    }
+    state[id] = v;
+    if (row) row.querySelector('.qtybox input').value = v;
+    recompute();
+  }
+
+  function recompute(){
+    let total = 0;
+    const lines = $('#lines');
+    lines.innerHTML = '';
+    const ids = Object.keys(state);
+    if (!ids.length){
+      lines.innerHTML = '<div class="empty"><span>—</span>Nothing selected yet. Tick the jobs you need on the left.</div>';
+    }
+    ids.forEach(id=>{
+      const s = meta[id]; if(!s) return;
+      const qty = state[id];
+      const amt = lineTotal(s, qty);
+      total += amt;
+      const li = document.createElement('div');
+      li.className = 'li';
+      li.innerHTML = '<div><div class="li-name">'+esc(s.name)+'</div>' +
+        '<div class="li-sub">'+ esc(subLabel(s, qty)) +'</div></div>' +
+        '<div class="li-amt">'+fmt(amt)+'</div>';
+      lines.appendChild(li);
+    });
+    const v = vatBreakdown(total);
+    $('#netAmt').textContent   = fmt(v.net);
+    $('#vatAmt').textContent   = fmt(v.vat);
+    $('#vatLabel').textContent = (CONFIG.vat ? CONFIG.vat.label : 'VAT') + ' @ ' + vatRate() + '%';
+    $('#vatToggleLbl').textContent = 'Add ' + vatRate() + '% ' + (CONFIG.vat ? CONFIG.vat.label : 'VAT');
+    $('#vatRows').classList.toggle('hide', !vatOn());
+    $('#totalLbl').textContent = vatOn() ? 'Total inc ' + (CONFIG.vat ? CONFIG.vat.label : 'VAT') : 'Rough total';
+    $('#totalAmt').textContent = fmt(v.gross);
+    $('#mTotal').textContent = fmt(v.gross);
+    const has = ids.length>0;
+    $('#printBtn').disabled = !has;
+    $('#emailBtn').disabled = !has;
+    $('#copyBtn').disabled = !has;
+    buildPrintDoc(total);
+    return total;
+  }
+
+  // ---- plain-text + print builders ----
+  function summaryLines(){
+    return Object.keys(state).map(id=>{
+      const s = meta[id]; const qty = state[id];
+      const label = s.qty ? (s.name+'  ('+subLabel(s, qty)+')') : s.name;
+      return { label, amt: lineTotal(s, qty) };
+    });
+  }
+  function totalNow(){ return Object.keys(state).reduce((t,id)=> t + (meta[id]?lineTotal(meta[id],state[id]):0),0); }
+
+  function vatOn(){ return !!(CONFIG.vat && $('#vatToggle').checked); }
+  function vatRate(){ return (CONFIG.vat && CONFIG.vat.rate) || 20; }
+  function vatBreakdown(net){
+    const vat = vatOn() ? Math.round(net * vatRate()) / 100 : 0;
+    return { net: net, vat: vat, gross: net + vat };
+  }
+
+  function subLabel(s, qty){
+    if (!s.qty) return s.unit;
+    const u = s.unit.replace(/^per /,'');
+    if (s.tier){
+      return qty <= s.tier.upTo
+        ? qty + ' ' + u + ' (first ' + s.tier.upTo + ' ' + u + ')'
+        : s.tier.upTo + ' ' + u + ' + ' + (qty - s.tier.upTo) + ' × ' + fmt(s.tier.after);
+    }
+    return qty + ' × ' + fmt(s.price) + ' ' + s.unit;
+  }
+
+  function textSummary(){
+    const rows = summaryLines();
+    let out = CONFIG.business + ' — rough estimate\nRef ' + ref + '  ·  ' + new Date().toLocaleDateString('en-GB') + '\n\n';
+    rows.forEach(r=> out += '• ' + r.label + '  —  ' + fmt(r.amt) + '\n');
+    const v = vatBreakdown(totalNow());
+    if (vatOn()){
+      out += '\nSubtotal: ' + fmt(v.net) + '\n';
+      out += (CONFIG.vat.label||'VAT') + ' @ ' + vatRate() + '%: ' + fmt(v.vat) + '\n';
+      out += 'Total inc ' + (CONFIG.vat.label||'VAT') + ': ' + fmt(v.gross) + '\n';
+    } else {
+      out += '\nRough total: ' + fmt(v.net) + '\n';
+    }
+    const n=$('#cName').value, p=$('#cPhone').value, e=$('#cEmail').value, notes=$('#cNotes').value;
+    if(n||p||e||notes){
+      out += '\nFrom:\n';
+      if(n) out+='Name: '+n+'\n';
+      if(p) out+='Phone: '+p+'\n';
+      if(e) out+='Email: '+e+'\n';
+      if(notes) out+='Notes: '+notes+'\n';
+    }
+    out += '\n'+CONFIG.disclaimer;
+    return out;
+  }
+
+  function buildPrintDoc(total){
+    const rows = summaryLines();
+    const n=$('#cName').value, p=$('#cPhone').value, e=$('#cEmail').value, notes=$('#cNotes').value;
+    let cust = '';
+    if(n||p||e||notes){
+      cust = '<div class="p-cust"><strong>Prepared for:</strong> ' +
+        [esc(n), esc(p), esc(e)].filter(Boolean).join(' · ') +
+        (notes? '<br>Notes: '+esc(notes):'') + '</div>';
+    }
+    $('#printDoc').innerHTML =
+      '<div class="p-head"><div><h1>'+esc(CONFIG.business)+'</h1>' +
+      '<div class="p-meta">Rough estimate · Ref '+ref+'</div></div>' +
+      '<div class="p-meta">'+new Date().toLocaleDateString('en-GB')+'</div></div>' +
+      rows.map(r=>'<div class="p-line"><span>'+esc(r.label)+'</span><span>'+fmt(r.amt)+'</span></div>').join('') +
+      (vatOn()
+        ? '<div class="p-line"><span>Subtotal</span><span>'+fmt(vatBreakdown(total).net)+'</span></div>' +
+          '<div class="p-line"><span>'+esc(CONFIG.vat.label||'VAT')+' @ '+vatRate()+'%</span><span>'+fmt(vatBreakdown(total).vat)+'</span></div>' +
+          '<div class="p-total"><span>Total inc '+esc(CONFIG.vat.label||'VAT')+'</span><span>'+fmt(vatBreakdown(total).gross)+'</span></div>'
+        : '<div class="p-total"><span>Rough total</span><span>'+fmt(total)+'</span></div>') +
+      cust +
+      '<div class="p-disc">'+esc(CONFIG.disclaimer)+'</div>';
+  }
+
+  // ---- actions ----
+  $('#printBtn').addEventListener('click', ()=>{ buildPrintDoc(totalNow()); window.print(); });
+
+  $('#emailBtn').addEventListener('click', async ()=>{
+    const subject = 'Estimate request — ' + ref + (($('#cName').value)?(' — '+$('#cName').value):'');
+    const body = textSummary();
+
+    // No form key configured → fall back to the customer's own email app.
+    if (!CONFIG.formKey){
+      window.location.href = 'mailto:' + encodeURIComponent(CONFIG.ownerEmail) +
+        '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+      return;
+    }
+
+    const btn = $('#emailBtn');
+    const label = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = 'Sending…';
+    try{
+      const res = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({
+          access_key: CONFIG.formKey,
+          subject: subject,
+          from_name: $('#cName').value || 'Website estimate',
+          reply_to: $('#cEmail').value || '',
+          phone: $('#cPhone').value || '',
+          message: body
+        })
+      });
+      const out = await res.json();
+      if (out.success){
+        btn.innerHTML = 'Sent — we\'ll be in touch';
+        $('#emailHint').textContent = 'Your estimate has been sent. Save a PDF copy for yourself below.';
+        toast('Estimate sent');
+      } else {
+        throw new Error(out.message || 'send failed');
+      }
+    } catch(err){
+      btn.disabled = false;
+      btn.innerHTML = label;
+      $('#emailHint').textContent = 'Could not send just now. Use Copy as text and email it to us instead.';
+      toast('Could not send — please try again');
+    }
+  });
+
+  $('#copyBtn').addEventListener('click', async ()=>{
+    try{ await navigator.clipboard.writeText(textSummary()); toast('Estimate copied to clipboard'); }
+    catch(e){ toast('Press Ctrl/Cmd+C to copy'); }
+  });
+
+  if (CONFIG.formKey) $('#emailHint').textContent = 'Sends straight to us — no email app needed.';
+  if (!CONFIG.vat){ $('#vatToggleWrap').style.display='none'; $('#vatRows').classList.add('hide'); }
+  else { $('#vatToggle').checked = CONFIG.vat.enabled !== false; }
+  $('#vatToggle').addEventListener('change', ()=>recompute());
+
+  $('#mScroll').addEventListener('click', ()=>{ $('.slip-wrap').scrollIntoView({behavior:'smooth'}); });
+
+  ['#cName','#cPhone','#cEmail','#cNotes'].forEach(sel=>{
+    $(sel).addEventListener('input', ()=>{ checkUnlock(); buildPrintDoc(totalNow()); });
+  });
+
+  // Edit prices appears only when BOTH the name and phone boxes match.
+  function checkUnlock(){
+    const u = CONFIG.editUnlock;
+    if (!u || !$('#ownerBtn').hidden) return;
+    const n = $('#cName').value.trim().toLowerCase();
+    const t = $('#cPhone').value.trim();
+    if (n === String(u.name).toLowerCase() && t === String(u.phone)){
+      $('#cName').value = ''; $('#cPhone').value = '';
+      unlockEditing();
+    }
+  }
+
+  function unlockEditing(){
+    if (!$('#ownerBtn').hidden) return;
+    $('#ownerBtn').hidden = false;
+    toast('Price editing unlocked');
+  }
+  // also available at yourpage.html#edit for your own device
+  if (location.hash.toLowerCase() === '#edit' || !CONFIG.editUnlock) unlockEditing();
+
+  // ---- edit mode ----
+  $('#ownerBtn').addEventListener('click', ()=>{
+    editing = !editing;
+    document.body.classList.toggle('editing', editing);
+    $('#ownerBtn').classList.toggle('active', editing);
+    $('#ownerBtn').textContent = editing ? 'Done editing' : 'Edit prices';
+    render(); recompute();
+  });
+
+  $('#addCatBtn').addEventListener('click', ()=>{
+    CONFIG.categories.push({ name:'New category', services:[{id:'svc-'+Math.random().toString(36).slice(2,7),name:'New job',price:0,unit:'each',qty:true}] });
+    render();
+  });
+
+  $('#exportBtn').addEventListener('click', ()=>{
+    const text = '/* === PRICE LIST START === */\nconst CONFIG = ' +
+      JSON.stringify(CONFIG, null, 2) + ';\n/* === PRICE LIST END === */';
+    $('#exportText').value = text;
+    $('#modalBg').classList.add('show');
+  });
+  $('#modalClose').addEventListener('click', ()=>$('#modalBg').classList.remove('show'));
+  $('#modalBg').addEventListener('click', e=>{ if(e.target===$('#modalBg')) $('#modalBg').classList.remove('show'); });
+  $('#modalCopy').addEventListener('click', async ()=>{
+    try{ await navigator.clipboard.writeText($('#exportText').value); toast('Price list copied'); }
+    catch(e){ $('#exportText').select(); toast('Press Ctrl/Cmd+C to copy'); }
+  });
+
+  // ---- helpers ----
+  let toastTimer;
+  function toast(msg){
+    const t=$('#toast'); t.textContent=msg; t.classList.add('show');
+    clearTimeout(toastTimer); toastTimer=setTimeout(()=>t.classList.remove('show'),2200);
+  }
+  function esc(s){ return String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])); }
+  function escAttr(s){ return String(s).replace(/"/g,'&quot;'); }
+
+  render();
+  recompute();
+})();
+</script>
+</body>
+</html>
