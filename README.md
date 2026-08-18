@@ -24,6 +24,17 @@ commits the change to this repo for you; the live page follows about a minute
 later. It reads the current prices with no key needed — a key is only required to
 save. See "The editor's GitHub key" below.
 
+The editor has two tabs:
+
+- **Customer prices** (`CONFIG.categories`) — everyone sees these.
+- **Hidden prices** (`CONFIG.hiddenCategories`) — these appear on the price guide
+  only after the unlock code is typed into the Name and Phone boxes, or with
+  `#edit` on the end of the address. Once revealed they behave like any other
+  job: tickable, counted in the total, and included on the PDF and the email.
+
+The unlock code lives in `CONFIG.editUnlock`. It is obfuscation, not security —
+anyone reading the page source can find both the code and the hidden prices.
+
 Prices live in a single `CONFIG` block near the top of `index.html`, between the
 `/* === PRICE LIST START === */` and `/* === PRICE LIST END === */` markers. The
 editor swaps that block and leaves the rest of the file untouched.
@@ -32,8 +43,6 @@ Other ways, if ever needed:
 
 - **Directly on GitHub.** Open `index.html`, click the pencil icon, edit the price
   block, commit.
-- **The in-page editor on the guide itself.** Edits there live only in the browser
-  and change nothing for customers until you export the block and commit it by hand.
 
 From this machine:
 
