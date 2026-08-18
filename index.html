@@ -34,6 +34,7 @@ const CONFIG = {
   },
   "disclaimer": "This is a rough guide only, not a fixed quote. Final pricing depends on a proper look at the job.",
   "callout": "Prices shown are typical. Bigger or trickier jobs may vary.",
+  "hiddenCategories": [],
   "categories": [
     {
       "name": "Plastering — Per Square meter",
@@ -328,6 +329,7 @@ const CONFIG = {
     --accent-deep:#0A4B46;
     --accent-wash:#DBEAE7;
     --warn:#B24A2E;
+    --warn-wash:#F6E3DC;
     --font-display:'Archivo', system-ui, sans-serif;
     --font-body:'Instrument Sans', system-ui, sans-serif;
     --font-mono:'Spline Sans Mono', ui-monospace, monospace;
@@ -350,7 +352,7 @@ const CONFIG = {
   }
   h1,h2,h3{font-family:var(--font-display);margin:0;letter-spacing:-.01em;}
   /* Repeated on the tap targets: some browsers only honour touch-action on the element hit. */
-  .row,.tick,.qtybox,.qtybox button,.btn,.owner-btn,.vat-toggle,.mbar button,.add-svc,.et-opt,.edit-toolbar button{
+  .row,.tick,.qtybox,.qtybox button,.btn,.vat-toggle,.mbar button{
     touch-action:manipulation;
   }
 
@@ -377,21 +379,6 @@ const CONFIG = {
   }
   header.top h1{font-size:clamp(28px,5vw,44px);font-weight:800;line-height:1.02;}
   header.top .tagline{color:var(--ink-soft);margin-top:8px;max-width:46ch;}
-  .owner-btn{
-    font-family:var(--font-mono);
-    font-size:12px;
-    letter-spacing:.04em;
-    background:none;
-    border:1px solid var(--line-strong);
-    color:var(--ink-soft);
-    padding:7px 12px;
-    border-radius:var(--radius);
-    cursor:pointer;
-    white-space:nowrap;
-    transition:all .15s;
-  }
-  .owner-btn:hover{border-color:var(--ink);color:var(--ink);}
-  .owner-btn.active{background:var(--ink);color:var(--paper);border-color:var(--ink);}
 
   /* ---- Layout ---- */
   .grid{display:grid;grid-template-columns:1fr 360px;gap:34px;align-items:start;}
@@ -443,20 +430,7 @@ const CONFIG = {
   .row .info{flex:1 1 auto;min-width:0;}
   .row .name{font-weight:500;}
   .row .unit{font-family:var(--font-mono);font-size:11px;color:var(--ink-soft);letter-spacing:.02em;margin-top:1px;}
-  .cat-name-edit{
-    flex:1 1 auto;font-family:var(--font-display);font-weight:700;font-size:16px;
-    text-transform:uppercase;letter-spacing:.1em;color:var(--accent-deep);
-    border:1px dashed var(--line-strong);border-radius:var(--radius);
-    padding:6px 8px;background:#fff;margin-right:10px;
-  }
-  .cat-del{
-    font-family:var(--font-mono);font-size:11px;letter-spacing:.04em;
-    background:none;border:1px solid var(--warn);color:var(--warn);
-    border-radius:var(--radius);padding:6px 10px;cursor:pointer;white-space:nowrap;
-  }
-  .cat-del:hover{background:var(--warn);color:#fff;}
   .row .note{font-size:12px;color:var(--ink-soft);font-style:italic;margin-top:2px;}
-  .ef-tier-lbl{font-family:var(--font-mono);font-size:11px;color:var(--ink-soft);white-space:nowrap;}
   .row .price{
     font-family:var(--font-mono);
     font-weight:500;
@@ -570,42 +544,20 @@ const CONFIG = {
   }
   .disclaim{font-size:11px;color:var(--ink-soft);margin-top:16px;line-height:1.45;border-top:1px solid var(--line);padding-top:12px;}
 
-  /* ---- Edit mode ---- */
-  body.editing .row{cursor:default;}
-  .edit-fields{display:none;gap:8px;flex-wrap:wrap;align-items:center;width:100%;}
-  body.editing .row .info,body.editing .row .price,body.editing .row .tick,body.editing .row .qtybox{display:none;}
-  body.editing .row .edit-fields{display:flex;}
-  body.editing .row{background:var(--panel);border:1px dashed var(--line-strong);border-radius:var(--radius);margin-bottom:6px;}
-  .edit-fields input{border:1px solid var(--line-strong);border-radius:var(--radius);padding:6px 8px;font-size:16px;font-family:var(--font-body);background:#fff;color:var(--ink);}
-  .ef-name{flex:1 1 180px;}
-  .ef-price{width:80px;font-family:var(--font-mono);}
-  .ef-unit{width:110px;}
-  .ef-del{background:none;border:none;color:var(--warn);cursor:pointer;font-size:18px;line-height:1;padding:4px;}
-  .add-svc{font-family:var(--font-mono);font-size:12px;color:var(--accent-deep);background:none;border:1px dashed var(--line-strong);border-radius:var(--radius);padding:7px 10px;cursor:pointer;margin-top:8px;}
-  .add-svc:hover{border-color:var(--accent);}
-  .edit-toolbar{display:none;background:var(--ink);color:var(--paper);padding:14px 18px;border-radius:var(--radius);margin-bottom:24px;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;}
-  body.editing .edit-toolbar{display:flex;}
-  .edit-toolbar p{margin:0;font-size:13px;color:#cdd8d5;max-width:60ch;}
-  .edit-toolbar .et-right{display:flex;align-items:center;gap:18px;flex-wrap:wrap;}
-  .edit-toolbar .et-opts{display:flex;flex-direction:column;gap:6px;}
-  .edit-toolbar .et-opt{
-    display:flex;align-items:center;gap:7px;cursor:pointer;user-select:none;
-    font-family:var(--font-mono);font-size:12px;letter-spacing:.03em;color:#cdd8d5;white-space:nowrap;
+  /* ---- Hidden categories (revealed by the secret code) ---- */
+  .cat-secret{
+    border:1px dashed var(--line-strong);
+    border-radius:var(--radius);
+    padding:14px 14px 4px;
+    margin-top:26px;
+    background:var(--panel);
   }
-  .edit-toolbar .et-opt input{width:15px;height:15px;accent-color:var(--accent);cursor:pointer;margin:0;}
-  .edit-toolbar .et-actions{display:flex;gap:8px;}
-  .edit-toolbar button{font-family:var(--font-display);font-weight:600;font-size:13px;padding:9px 14px;border-radius:var(--radius);cursor:pointer;border:none;}
-  .et-export{background:var(--accent);color:#fff;}
-  .et-add-cat{background:transparent;color:var(--paper);border:1px solid #4a5450 !important;}
-
-  /* export modal */
-  .modal-bg{display:none;position:fixed;inset:0;background:rgba(20,26,24,.55);z-index:50;align-items:center;justify-content:center;padding:20px;}
-  .modal-bg.show{display:flex;}
-  .modal{background:var(--paper);border-radius:var(--radius);max-width:640px;width:100%;padding:24px;box-shadow:0 20px 60px rgba(0,0,0,.3);}
-  .modal h3{font-size:18px;margin-bottom:8px;}
-  .modal p{font-size:13px;color:var(--ink-soft);margin:0 0 14px;line-height:1.5;}
-  .modal textarea{width:100%;height:220px;font-family:var(--font-mono);font-size:12px;border:1px solid var(--line-strong);border-radius:var(--radius);padding:12px;background:#fff;color:var(--ink);resize:vertical;}
-  .modal .m-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:14px;}
+  .cat-secret > h2{border-bottom-color:var(--line-strong);}
+  .cat-tag{
+    font-family:var(--font-mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--warn);background:var(--warn-wash);border:1px solid #e2b8a8;
+    border-radius:99px;padding:2px 9px;white-space:nowrap;
+  }
 
   /* mobile sticky total */
   .mbar{display:none;}
@@ -630,7 +582,7 @@ const CONFIG = {
   #printDoc{display:none;}
   @media print{
     body{background:#fff;}
-    .wrap,header.top,.grid,.mbar,.owner-btn,.edit-toolbar{display:none !important;}
+    .wrap,header.top,.grid,.mbar{display:none !important;}
     #printDoc{display:block;padding:0;color:#000;font-family:var(--font-body);}
     #printDoc .p-head{display:flex;justify-content:space-between;border-bottom:2px solid #000;padding-bottom:12px;margin-bottom:16px;}
     #printDoc h1{font-family:var(--font-display);font-size:26px;}
@@ -650,22 +602,7 @@ const CONFIG = {
         <h1 id="bizName">Your Business</h1>
         <p class="tagline" id="tagline"></p>
       </div>
-      <button class="owner-btn" id="ownerBtn" hidden>Edit prices</button>
     </header>
-
-    <div class="edit-toolbar">
-      <p>Editing mode — change any name, price or unit, add jobs or categories. Nothing is saved automatically, so hit <strong>Export price list</strong> and paste the result back into your file to keep changes.</p>
-      <div class="et-right">
-        <div class="et-opts">
-          <label class="et-opt"><input type="checkbox" id="optVat">Show VAT</label>
-          <label class="et-opt"><input type="checkbox" id="optSend">Show send button</label>
-        </div>
-        <div class="et-actions">
-          <button class="et-add-cat" id="addCatBtn">+ Category</button>
-          <button class="et-export" id="exportBtn">Export price list</button>
-        </div>
-      </div>
-    </div>
 
     <div class="grid">
       <div class="services" id="services"></div>
@@ -729,18 +666,6 @@ const CONFIG = {
 
   <div id="printDoc"></div>
 
-  <div class="modal-bg" id="modalBg">
-    <div class="modal">
-      <h3>Export your price list</h3>
-      <p>Copy everything below and paste it into <code>index.html</code>, replacing the block between <code>PRICE LIST START</code> and <code>PRICE LIST END</code>. Commit the file on GitHub and the live page updates for everyone about a minute later.</p>
-      <textarea id="exportText" readonly></textarea>
-      <div class="m-actions">
-        <button class="btn ghost" id="modalClose">Close</button>
-        <button class="btn primary" id="modalCopy">Copy to clipboard</button>
-      </div>
-    </div>
-  </div>
-
   <div class="toast" id="toast"></div>
 
 <script>
@@ -761,7 +686,7 @@ const CONFIG = {
   }
   const state = {};          // id -> qty
   const meta = {};           // id -> {name, price, unit, qty}
-  let editing = false;
+  let unlocked = false;   // true once the secret code (or #edit) reveals the hidden price list
   const ref = 'EST-' + Math.random().toString(36).slice(2,6).toUpperCase() + '-' +
               new Date().toISOString().slice(2,10).replace(/-/g,'');
 
@@ -776,117 +701,73 @@ const CONFIG = {
 
   const svgTick = '<svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>';
 
+  function hiddenCats(){ return Array.isArray(CONFIG.hiddenCategories) ? CONFIG.hiddenCategories : []; }
+
   function render(){
     const wrap = $('#services');
     wrap.innerHTML = '';
-    CONFIG.categories.forEach((cat, ci) => {
-      const block = document.createElement('div');
-      block.className = 'cat';
-      const h = document.createElement('h2');
-      if (editing){
-        const nameIn = document.createElement('input');
-        nameIn.className = 'cat-name-edit';
-        nameIn.value = cat.name;
-        nameIn.addEventListener('input', e=>{ cat.name = e.target.value; });
-        const delCat = document.createElement('button');
-        delCat.className = 'cat-del';
-        delCat.textContent = 'Delete category';
-        delCat.addEventListener('click', ()=>{
-          cat.services.forEach(s=>delete state[s.id]);
-          CONFIG.categories.splice(ci,1);
-          render(); recompute();
+    CONFIG.categories.forEach(cat => wrap.appendChild(catBlock(cat, false)));
+    if (unlocked) hiddenCats().forEach(cat => wrap.appendChild(catBlock(cat, true)));
+  }
+
+  function catBlock(cat, isHidden){
+    const block = document.createElement('div');
+    block.className = 'cat' + (isHidden ? ' cat-secret' : '');
+
+    const h = document.createElement('h2');
+    h.innerHTML = '<span>' + esc(cat.name) + '</span>' +
+      (isHidden
+        ? '<span class="cat-tag">Hidden from customers</span>'
+        : '<span class="cat-count">' + cat.services.length + ' item' + (cat.services.length!==1?'s':'') + '</span>');
+    block.appendChild(h);
+
+    cat.services.forEach(svc => {
+      meta[svc.id] = svc;
+      const row = document.createElement('div');
+      row.className = 'row' + (state[svc.id] ? ' on' : '');
+      row.dataset.id = svc.id;
+
+      row.innerHTML =
+        '<div class="tick">' + svgTick + '</div>' +
+        '<div class="info"><div class="name">' + esc(svc.name) + '</div>' +
+        '<div class="unit">' + esc(priceLabel(svc)) + '</div>' +
+        (svc.note ? '<div class="note">' + esc(svc.note) + '</div>' : '') + '</div>';
+
+      // qty controls (only when selected and qty allowed)
+      if (svc.qty){
+        const qb = document.createElement('div');
+        qb.className = 'qtybox';
+        qb.style.display = state[svc.id] ? 'flex' : 'none';
+        qb.innerHTML = '<span class="qty-lbl">Qty</span><button data-act="dec" aria-label="Fewer">–</button>' +
+                       '<input type="text" inputmode="numeric" aria-label="Quantity" value="'+(state[svc.id]||1)+'">' +
+                       '<button data-act="inc" aria-label="More">+</button>';
+        row.appendChild(qb);
+        qb.addEventListener('click', e=>{ e.stopPropagation(); });
+        qb.querySelector('[data-act="inc"]').addEventListener('click', ()=>changeQty(svc.id, 1));
+        qb.querySelector('[data-act="dec"]').addEventListener('click', ()=>changeQty(svc.id, -1));
+        qb.querySelector('input').addEventListener('input', e=>{
+          let v = parseInt(e.target.value.replace(/\D/g,'')) || 1;
+          state[svc.id] = v; recompute();
         });
-        h.appendChild(nameIn); h.appendChild(delCat);
-      } else {
-        h.innerHTML = '<span>' + esc(cat.name) + '</span><span class="cat-count">' + cat.services.length + ' item' + (cat.services.length!==1?'s':'') + '</span>';
       }
-      block.appendChild(h);
+      const price = document.createElement('div');
+      price.className = 'price';
+      price.textContent = svc.tier ? 'from ' + fmt(svc.price) : fmt(svc.price);
+      row.appendChild(price);
 
-      cat.services.forEach((svc, si) => {
-        meta[svc.id] = svc;
-        const row = document.createElement('div');
-        row.className = 'row' + (state[svc.id] ? ' on' : '');
-        row.dataset.id = svc.id;
-
-        // display side
-        row.innerHTML =
-          '<div class="tick">' + svgTick + '</div>' +
-          '<div class="info"><div class="name">' + esc(svc.name) + '</div>' +
-          '<div class="unit">' + esc(priceLabel(svc)) + '</div>' +
-          (svc.note ? '<div class="note">' + esc(svc.note) + '</div>' : '') + '</div>';
-
-        // qty controls (only when selected and qty allowed)
-        if (svc.qty){
-          const qb = document.createElement('div');
-          qb.className = 'qtybox';
-          qb.style.display = state[svc.id] ? 'flex' : 'none';
-          qb.innerHTML = '<span class="qty-lbl">Qty</span><button data-act="dec" aria-label="Fewer">–</button>' +
-                         '<input type="text" inputmode="numeric" aria-label="Quantity" value="'+(state[svc.id]||1)+'">' +
-                         '<button data-act="inc" aria-label="More">+</button>';
-          row.appendChild(qb);
-          qb.addEventListener('click', e=>{ e.stopPropagation(); });
-          qb.querySelector('[data-act="inc"]').addEventListener('click', ()=>changeQty(svc.id, 1));
-          qb.querySelector('[data-act="dec"]').addEventListener('click', ()=>changeQty(svc.id, -1));
-          qb.querySelector('input').addEventListener('input', e=>{
-            let v = parseInt(e.target.value.replace(/\D/g,'')) || 1;
-            state[svc.id] = v; recompute();
-          });
-        }
-        const price = document.createElement('div');
-        price.className = 'price';
-        price.textContent = svc.tier ? 'from ' + fmt(svc.price) : fmt(svc.price);
-        row.appendChild(price);
-
-        // edit fields
-        const ef = document.createElement('div');
-        ef.className = 'edit-fields';
-        ef.innerHTML =
-          '<input class="ef-name" value="'+escAttr(svc.name)+'" placeholder="Job name">' +
-          '<input class="ef-price" type="text" inputmode="numeric" value="'+svc.price+'">' +
-          '<input class="ef-unit" value="'+escAttr(svc.unit)+'" placeholder="unit">' +
-          (svc.tier ? '<span class="ef-tier-lbl">first '+svc.tier.upTo+', then</span>' +
-                      '<input class="ef-price ef-after" type="text" inputmode="numeric" value="'+svc.tier.after+'">' : '') +
-          '<button class="ef-del" title="Remove">✕</button>';
-        ef.querySelectorAll('input').forEach(inp=>inp.addEventListener('click',e=>e.stopPropagation()));
-        ef.querySelector('.ef-name').addEventListener('input', e=>{ svc.name = e.target.value; });
-        ef.querySelector('.ef-price').addEventListener('input', e=>{ svc.price = parseFloat(e.target.value.replace(/[^\d.]/g,''))||0; });
-        ef.querySelector('.ef-unit').addEventListener('input', e=>{ svc.unit = e.target.value; });
-        const efAfter = ef.querySelector('.ef-after');
-        if (efAfter) efAfter.addEventListener('input', e=>{ svc.tier.after = parseFloat(e.target.value.replace(/[^\d.]/g,''))||0; });
-        ef.querySelector('.ef-del').addEventListener('click', e=>{
-          e.stopPropagation();
-          cat.services.splice(si,1); delete state[svc.id]; render(); recompute();
-        });
-        row.appendChild(ef);
-
-        // select toggle
-        row.addEventListener('click', ()=>{
-          if (editing) return;
-          if (state[svc.id]) { delete state[svc.id]; }
-          else { state[svc.id] = svc.qty ? 1 : 1; }
-          row.classList.toggle('on', !!state[svc.id]);
-          const q = row.querySelector('.qtybox');
-          if (q) q.style.display = state[svc.id] ? 'flex' : 'none';
-          recompute();
-        });
-
-        block.appendChild(row);
+      row.addEventListener('click', ()=>{
+        if (state[svc.id]) { delete state[svc.id]; }
+        else { state[svc.id] = 1; }
+        row.classList.toggle('on', !!state[svc.id]);
+        const q = row.querySelector('.qtybox');
+        if (q) q.style.display = state[svc.id] ? 'flex' : 'none';
+        recompute();
       });
 
-      // add-service button (edit mode)
-      if (editing){
-        const add = document.createElement('button');
-        add.className = 'add-svc';
-        add.textContent = '+ Add a job to ' + cat.name;
-        add.addEventListener('click', ()=>{
-          cat.services.push({ id:'svc-'+Math.random().toString(36).slice(2,7), name:'New job', price:0, unit:'each', qty:true });
-          render();
-        });
-        block.appendChild(add);
-      }
-
-      wrap.appendChild(block);
+      block.appendChild(row);
     });
+
+    return block;
   }
 
   function changeQty(id, d){
@@ -1073,7 +954,7 @@ const CONFIG = {
   if (CONFIG.vat) $('#vatToggle').checked = CONFIG.vat.enabled !== false;
   $('#vatToggle').addEventListener('change', ()=>recompute());
 
-  // Show or hide whole features. Both switches live in the edit toolbar and export with the price list.
+  // Show or hide whole features. Both switches are set in the price editor (edit.html).
   function applyOptions(){
     const showVat = vatShown();
     $('#vatToggleWrap').style.display = showVat ? '' : 'none';
@@ -1081,18 +962,7 @@ const CONFIG = {
     const showSend = sendShown();
     $('#emailBtn').style.display = showSend ? '' : 'none';
     $('#emailHint').style.display = showSend ? '' : 'none';
-    $('#optVat').checked = showVat;
-    $('#optSend').checked = showSend;
   }
-  $('#optVat').addEventListener('change', e=>{
-    CONFIG.showVat = e.target.checked;
-    if (e.target.checked && !CONFIG.vat) CONFIG.vat = { enabled:true, rate:20, label:'VAT' };
-    applyOptions(); recompute();
-  });
-  $('#optSend').addEventListener('change', e=>{
-    CONFIG.showSendButton = e.target.checked;
-    applyOptions();
-  });
   applyOptions();
 
   $('#mScroll').addEventListener('click', ()=>{ $('.slip-wrap').scrollIntoView({behavior:'smooth'}); });
@@ -1101,52 +971,29 @@ const CONFIG = {
     $(sel).addEventListener('input', ()=>{ checkUnlock(); buildPrintDoc(totalNow()); });
   });
 
-  // Edit prices appears only when BOTH the name and phone boxes match.
+  // The hidden price list appears only when BOTH the name and phone boxes match the code.
   function checkUnlock(){
     const u = CONFIG.editUnlock;
-    if (!u || !$('#ownerBtn').hidden) return;
+    if (!u || unlocked) return;
     const n = $('#cName').value.trim().toLowerCase();
     const t = $('#cPhone').value.trim();
     if (n === String(u.name).toLowerCase() && t === String(u.phone)){
       $('#cName').value = ''; $('#cPhone').value = '';
-      unlockEditing();
+      revealHidden();
     }
   }
 
-  function unlockEditing(){
-    if (!$('#ownerBtn').hidden) return;
-    $('#ownerBtn').hidden = false;
-    toast('Price editing unlocked');
-  }
-  // also available at yourpage.html#edit for your own device
-  if (location.hash.toLowerCase() === '#edit' || !CONFIG.editUnlock) unlockEditing();
-
-  // ---- edit mode ----
-  $('#ownerBtn').addEventListener('click', ()=>{
-    editing = !editing;
-    document.body.classList.toggle('editing', editing);
-    $('#ownerBtn').classList.toggle('active', editing);
-    $('#ownerBtn').textContent = editing ? 'Done editing' : 'Edit prices';
+  function revealHidden(){
+    if (unlocked) return;
+    unlocked = true;
     render(); recompute();
-  });
-
-  $('#addCatBtn').addEventListener('click', ()=>{
-    CONFIG.categories.push({ name:'New category', services:[{id:'svc-'+Math.random().toString(36).slice(2,7),name:'New job',price:0,unit:'each',qty:true}] });
-    render();
-  });
-
-  $('#exportBtn').addEventListener('click', ()=>{
-    const text = '/* === PRICE LIST START === */\nconst CONFIG = ' +
-      JSON.stringify(CONFIG, null, 2) + ';\n/* === PRICE LIST END === */';
-    $('#exportText').value = text;
-    $('#modalBg').classList.add('show');
-  });
-  $('#modalClose').addEventListener('click', ()=>$('#modalBg').classList.remove('show'));
-  $('#modalBg').addEventListener('click', e=>{ if(e.target===$('#modalBg')) $('#modalBg').classList.remove('show'); });
-  $('#modalCopy').addEventListener('click', async ()=>{
-    try{ await navigator.clipboard.writeText($('#exportText').value); toast('Price list copied'); }
-    catch(e){ $('#exportText').select(); toast('Press Ctrl/Cmd+C to copy'); }
-  });
+    const n = hiddenCats().reduce((t,c)=>t+c.services.length,0);
+    toast(n ? 'Extra prices unlocked' : 'No extra prices set up yet');
+    const first = document.querySelector('.cat-secret');
+    if (first) first.scrollIntoView({behavior:'smooth', block:'start'});
+  }
+  // also available at yourpage.html#edit on your own device
+  if (location.hash.toLowerCase() === '#edit') revealHidden();
 
   // ---- helpers ----
   // var, not let: toast() runs during setup (the #edit unlock) before this line is reached.
@@ -1156,7 +1003,6 @@ const CONFIG = {
     clearTimeout(toastTimer); toastTimer=setTimeout(()=>t.classList.remove('show'),2200);
   }
   function esc(s){ return String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])); }
-  function escAttr(s){ return String(s).replace(/"/g,'&quot;'); }
 
   render();
   recompute();

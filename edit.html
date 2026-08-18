@@ -108,6 +108,27 @@ const KEY_STORE  = "kpg-github-key";
   .add:hover{border-color:var(--accent);background:var(--accent-wash);}
   .add-cat{margin-bottom:22px;}
 
+  /* ---- tabs ---- */
+  .tabs{display:flex;gap:6px;margin-bottom:16px;border-bottom:2px solid var(--line);}
+  .tab{
+    font-family:var(--font-display);font-weight:600;font-size:15px;
+    background:none;border:none;border-bottom:3px solid transparent;
+    padding:10px 14px;cursor:pointer;color:var(--ink-soft);
+    touch-action:manipulation;margin-bottom:-2px;
+  }
+  .tab.on{color:var(--accent-deep);border-bottom-color:var(--accent);}
+  .tab .pill{
+    font-family:var(--font-mono);font-size:11px;background:var(--line);color:var(--ink);
+    border-radius:99px;padding:1px 7px;margin-left:6px;
+  }
+  .tab.on .pill{background:var(--accent);color:#fff;}
+  .tab-note{
+    font-size:13px;color:var(--ink-soft);line-height:1.5;
+    background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--accent);
+    border-radius:var(--radius);padding:10px 12px;margin-bottom:16px;
+  }
+  .tab-note.secret{border-left-color:var(--warn);}
+
   /* ---- buttons ---- */
   .btn{
     font-family:var(--font-display);font-weight:600;font-size:15px;padding:12px 16px;
@@ -159,6 +180,12 @@ const KEY_STORE  = "kpg-github-key";
       <label class="opt" style="margin-top:8px;"><input type="checkbox" id="optSend"><span>Show the "Send this estimate to us" button<small>Save/print as PDF and Copy as text always stay.</small></span></label>
     </div>
 
+    <div class="tabs">
+      <button class="tab on" id="tabPublic" type="button">Customer prices <span class="pill" id="pillPublic">0</span></button>
+      <button class="tab" id="tabSecret" type="button">Hidden prices <span class="pill" id="pillSecret">0</span></button>
+    </div>
+    <p class="tab-note" id="tabNote"></p>
+
     <div id="cats"></div>
     <button class="add add-cat" id="addCat">+ Add a new category</button>
 
@@ -206,6 +233,17 @@ const KEY_STORE  = "kpg-github-key";
   let fileSha  = "";   // blob sha, needed to commit over it
   let cfg      = null; // the parsed price list
   let dirty    = false;
+  let tab      = 'public';   // 'public' = shown to everyone, 'secret' = behind the code
+
+  // The two lists the editor switches between.
+  function activeList(){
+    if (tab === 'secret'){
+      if (!Array.isArray(cfg.hiddenCategories)) cfg.hiddenCategories = [];
+      return cfg.hiddenCategories;
+    }
+    return cfg.categories;
+  }
+  function secretList(){ return Array.isArray(cfg.hiddenCategories) ? cfg.hiddenCategories : []; }
 
   $('#liveLink').href = REPO.live;
 
@@ -239,10 +277,32 @@ const KEY_STORE  = "kpg-github-key";
     $('#sbState').classList.toggle('dirty', v);
     $('#saveBtn').disabled = !v;
   }
+  const tally = list => list.reduce((t,c)=>t+c.services.length,0);
+
   function countJobs(){
-    const n = cfg ? cfg.categories.reduce((t,c)=>t+c.services.length,0) : 0;
-    $('#sbCount').textContent = n + ' job' + (n!==1?'s':'') + ' in ' + (cfg?cfg.categories.length:0) + ' categories';
+    if (!cfg) return;
+    const pub = tally(cfg.categories), sec = tally(secretList());
+    $('#pillPublic').textContent = pub;
+    $('#pillSecret').textContent = sec;
+    const n = tab === 'secret' ? sec : pub;
+    const cats = tab === 'secret' ? secretList().length : cfg.categories.length;
+    $('#sbCount').textContent = n + ' job' + (n!==1?'s':'') + ' in ' + cats + ' categor' + (cats!==1?'ies':'y');
   }
+
+  function setTab(which){
+    tab = which;
+    $('#tabPublic').classList.toggle('on', which === 'public');
+    $('#tabSecret').classList.toggle('on', which === 'secret');
+    $('#tabNote').className = 'tab-note' + (which === 'secret' ? ' secret' : '');
+    $('#tabNote').innerHTML = which === 'secret'
+      ? 'These are <strong>not shown to customers</strong>. They appear on the price guide only after the secret code is entered in the Name and Phone boxes, or by adding <code>#edit</code> to the end of the address.'
+      : 'These are the prices <strong>every customer sees</strong> as soon as they open the price guide.';
+    $('#addCat').textContent = which === 'secret' ? '+ Add a new hidden category' : '+ Add a new category';
+    render(); countJobs();
+    window.scrollTo({ top:0, behavior:'smooth' });
+  }
+  $('#tabPublic').addEventListener('click', ()=>setTab('public'));
+  $('#tabSecret').addEventListener('click', ()=>setTab('secret'));
 
   const storedKey = () => { try { return localStorage.getItem(KEY_STORE) || ''; } catch(e){ return ''; } };
   function showKeyState(){
@@ -292,10 +352,10 @@ const KEY_STORE  = "kpg-github-key";
       fileSha  = data.sha;
       fileText = b64decode(data.content);
       cfg = parseBlock(fileText);
-      render();
+      if (!Array.isArray(cfg.hiddenCategories)) cfg.hiddenCategories = [];
       $('#editor').hidden = false;
+      setTab(tab);
       setDirty(false);
-      countJobs();
       if (badKey){
         say('Your prices loaded, but the key saved on this device was <strong>rejected by GitHub</strong>, ' +
             'so saving will not work yet. Delete that key on GitHub, make a new one, and paste it into ' +
@@ -332,9 +392,10 @@ const KEY_STORE  = "kpg-github-key";
     $('#optVatDefault').checked = !!(cfg.vat && cfg.vat.enabled);
     $('#vatRate').value         = (cfg.vat && cfg.vat.rate != null) ? cfg.vat.rate : 20;
 
+    const list = activeList();
     const host = $('#cats');
     host.innerHTML = '';
-    cfg.categories.forEach((cat, ci) => {
+    list.forEach((cat, ci) => {
       const box = document.createElement('div');
       box.className = 'cat';
 
@@ -349,7 +410,7 @@ const KEY_STORE  = "kpg-github-key";
       delBtn.textContent = 'Delete category';
       delBtn.addEventListener('click', ()=>{
         if (!confirm('Delete "' + cat.name + '" and all ' + cat.services.length + ' jobs in it?')) return;
-        cfg.categories.splice(ci,1); render(); setDirty(true); countJobs();
+        list.splice(ci,1); render(); setDirty(true); countJobs();
       });
       head.appendChild(nameIn); head.appendChild(delBtn);
       box.appendChild(head);
@@ -417,7 +478,7 @@ const KEY_STORE  = "kpg-github-key";
     cfg.vat.rate = parseFloat(e.target.value.replace(/[^\d.]/g,'')) || 0; setDirty(true);
   });
   $('#addCat').addEventListener('click', ()=>{
-    cfg.categories.push({ name:'New category', services:[
+    activeList().push({ name: tab === 'secret' ? 'New hidden category' : 'New category', services:[
       { id:'svc-'+Math.random().toString(36).slice(2,7), name:'New job', price:0, unit:'each', qty:true }
     ]});
     render(); setDirty(true); countJobs();
