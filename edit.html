@@ -91,10 +91,10 @@ const KEY_STORE  = "kpg-github-key";
   .job .j-price{font-family:var(--font-mono);text-align:right;}
   .job .j-unit{font-size:16px;}  /* 16px minimum or iOS zooms the page on tap */
   @media(max-width:640px){
-    /* Name must span two columns — on its own in a 1fr track the auto columns
-       squeeze it down to nothing. */
+    /* Two equal fr columns, not auto: an auto track sizes itself to the unit input's
+       natural width and starves whatever shares its column. */
     .job{
-      grid-template-columns:1fr auto auto;
+      grid-template-columns:1fr 1fr auto;
       grid-template-areas:"name name del" "price unit hide" "move move move";
       gap:8px;padding:14px 0;
     }
