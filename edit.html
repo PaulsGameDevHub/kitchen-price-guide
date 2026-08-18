@@ -89,7 +89,7 @@ const KEY_STORE  = "kpg-github-key";
   .job:last-child{border-bottom:none;}
   .job input{border:1px solid var(--line-strong);border-radius:var(--radius);padding:9px 10px;background:#fff;color:var(--ink);min-width:0;width:100%;}
   .job .j-price{font-family:var(--font-mono);text-align:right;}
-  .job .j-unit{font-size:15px;}
+  .job .j-unit{font-size:16px;}  /* 16px minimum or iOS zooms the page on tap */
   @media(max-width:640px){
     .job{grid-template-columns:1fr auto;grid-template-areas:"name del" "price unit";gap:8px;padding:14px 0;}
     .job .j-name{grid-area:name;} .job .j-price{grid-area:price;} .job .j-unit{grid-area:unit;} .job .j-del{grid-area:del;}
