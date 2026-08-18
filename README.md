@@ -24,6 +24,12 @@ commits the change to this repo for you; the live page follows about a minute
 later. It reads the current prices with no key needed — a key is only required to
 save. See "The editor's GitHub key" below.
 
+## Reordering
+
+Every category and every job has **▲ ▼** buttons. Categories move within the list,
+jobs move within their category. The arrows grey out at the top and bottom, and the
+order is exactly what customers see on the price guide.
+
 ## Hiding prices from customers
 
 Every category and every job in the editor has a **Hide** tick.
