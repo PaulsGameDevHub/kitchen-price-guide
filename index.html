@@ -37,69 +37,6 @@ const CONFIG = {
   },
   "disclaimer": "This is a rough guide only, not a fixed quote. Final pricing depends on a proper look at the job.",
   "callout": "Prices shown are typical. Bigger or trickier jobs may vary.",
-  "hiddenCategories": [
-    {
-      "name": "Kitchen Installation Costs",
-      "services": [
-        {
-          "id": "svc-0wxcx",
-          "name": "Install unit",
-          "price": 52,
-          "unit": "each",
-          "qty": true
-        },
-        {
-          "id": "svc-zhn5v",
-          "name": "Install worktop ",
-          "price": 20,
-          "unit": "per meter",
-          "qty": true
-        },
-        {
-          "id": "svc-2hmg8",
-          "name": "Worktop Joint",
-          "price": 50,
-          "unit": "each",
-          "qty": true
-        },
-        {
-          "id": "svc-me7fd",
-          "name": "Install Tek-Wall (Cladding)",
-          "price": 30,
-          "unit": "Per meter",
-          "qty": true
-        },
-        {
-          "id": "svc-mo1xe",
-          "name": "Install splashback",
-          "price": 30,
-          "unit": "each",
-          "qty": true
-        },
-        {
-          "id": "svc-mmhbr",
-          "name": "Hob cut out",
-          "price": 50,
-          "unit": "each",
-          "qty": true
-        },
-        {
-          "id": "svc-8pwpg",
-          "name": "Remove kitchen",
-          "price": 300,
-          "unit": "each",
-          "qty": true
-        },
-        {
-          "id": "svc-1bqhl",
-          "name": "Dispose of kitchen ",
-          "price": 300,
-          "unit": "each",
-          "qty": true
-        }
-      ]
-    }
-  ],
   "categories": [
     {
       "name": "Plastering — Per Square meter",
@@ -203,6 +140,14 @@ const CONFIG = {
     {
       "name": "Appliances & Kitchen Units",
       "services": [
+        {
+          "id": "svc-3fucx",
+          "name": "Install appliance",
+          "price": 70,
+          "unit": "per appliance",
+          "qty": true,
+          "hidden": true
+        },
         {
           "id": "install-appl",
           "name": "Install customer-supplied appliance",
@@ -363,6 +308,68 @@ const CONFIG = {
           "qty": true
         }
       ]
+    },
+    {
+      "name": "Kitchen Installation Costs",
+      "services": [
+        {
+          "id": "svc-0wxcx",
+          "name": "Install unit",
+          "price": 52,
+          "unit": "each",
+          "qty": true
+        },
+        {
+          "id": "svc-zhn5v",
+          "name": "Install worktop ",
+          "price": 20,
+          "unit": "per meter",
+          "qty": true
+        },
+        {
+          "id": "svc-2hmg8",
+          "name": "Worktop Joint",
+          "price": 50,
+          "unit": "each",
+          "qty": true
+        },
+        {
+          "id": "svc-me7fd",
+          "name": "Install Tek-Wall (Cladding)",
+          "price": 30,
+          "unit": "Per meter",
+          "qty": true
+        },
+        {
+          "id": "svc-mo1xe",
+          "name": "Install splashback",
+          "price": 30,
+          "unit": "each",
+          "qty": true
+        },
+        {
+          "id": "svc-mmhbr",
+          "name": "Hob cut out",
+          "price": 50,
+          "unit": "each",
+          "qty": true
+        },
+        {
+          "id": "svc-8pwpg",
+          "name": "Remove kitchen",
+          "price": 300,
+          "unit": "each",
+          "qty": true
+        },
+        {
+          "id": "svc-1bqhl",
+          "name": "Dispose of kitchen ",
+          "price": 300,
+          "unit": "each",
+          "qty": true
+        }
+      ],
+      "hidden": true
     }
   ]
 };
