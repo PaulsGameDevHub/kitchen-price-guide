@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Price editor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=Instrument+Sans:wght@400;500;600&family=Spline+Sans+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<script>
+/* Where the price list lives. The editor reads this file, swaps the price block, and commits it back. */
+const REPO = {
+  owner:  "PaulsGameDevHub",
+  name:   "kitchen-price-guide",
+  path:   "index.html",
+  branch: "main",
+  live:   "https://paulsgamedevhub.github.io/kitchen-price-guide/"
+};
+const MARK_START = "/* === PRICE LIST START === */";
+const MARK_END   = "/* === PRICE LIST END === */";
+const KEY_STORE  = "kpg-github-key";
+</script>
+
+<style>
+  :root{
+    --paper:#EFF1EC; --panel:#F7F8F5; --ink:#1C2422; --ink-soft:#586059;
+    --line:#CDD3CA; --line-strong:#AEB6AB;
+    --accent:#0E6E67; --accent-deep:#0A4B46; --accent-wash:#DBEAE7;
+    --warn:#B24A2E; --warn-wash:#F6E3DC;
+    --font-display:'Archivo', system-ui, sans-serif;
+    --font-body:'Instrument Sans', system-ui, sans-serif;
+    --font-mono:'Spline Sans Mono', ui-monospace, monospace;
+    --radius:4px;
+    --shadow:0 1px 2px rgba(28,36,34,.06), 0 8px 24px rgba(28,36,34,.06);
+  }
+  *{box-sizing:border-box;}
+  html{-webkit-text-size-adjust:100%;touch-action:manipulation;}
+  body{
+    margin:0;background:var(--paper);color:var(--ink);
+    font-family:var(--font-body);font-size:16px;line-height:1.5;
+    -webkit-font-smoothing:antialiased;touch-action:manipulation;
+    padding-bottom:96px;
+  }
+  h1,h2,h3{font-family:var(--font-display);margin:0;letter-spacing:-.01em;}
+  button,input,select{font-family:inherit;font-size:16px;}
+  .wrap{max-width:900px;margin:0 auto;padding:24px 16px;}
+
+  header.top{border-bottom:2px solid var(--ink);padding-bottom:16px;margin-bottom:22px;}
+  .brandline{font-family:var(--font-mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent-deep);margin-bottom:6px;}
+  header.top h1{font-size:clamp(26px,5vw,36px);font-weight:800;}
+  header.top p{color:var(--ink-soft);margin:8px 0 0;max-width:60ch;}
+  header.top a{color:var(--accent-deep);}
+
+  .card{background:var(--panel);border:1px solid var(--line-strong);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px;margin-bottom:18px;}
+  .card > h2{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.14em;color:var(--accent-deep);margin-bottom:12px;}
+
+  .note{font-size:13px;color:var(--ink-soft);line-height:1.5;}
+  .note code{font-family:var(--font-mono);font-size:12px;background:var(--paper);padding:1px 4px;border-radius:3px;}
+
+  /* ---- status ---- */
+  .status{border-radius:var(--radius);padding:12px 14px;margin-bottom:18px;font-size:14px;display:none;}
+  .status.show{display:block;}
+  .status.info{background:var(--accent-wash);color:var(--accent-deep);border:1px solid #b9d6d1;}
+  .status.bad{background:var(--warn-wash);color:var(--warn);border:1px solid #e2b8a8;}
+  .status a{color:inherit;font-weight:600;}
+
+  /* ---- settings ---- */
+  .opt{display:flex;align-items:center;gap:10px;padding:7px 0;cursor:pointer;user-select:none;touch-action:manipulation;}
+  .opt input{width:18px;height:18px;accent-color:var(--accent);cursor:pointer;margin:0;flex:0 0 auto;}
+  .opt span{font-size:15px;}
+  .opt small{display:block;color:var(--ink-soft);font-size:12px;line-height:1.35;}
+  .rate{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:15px;}
+  .rate input{width:72px;text-align:center;font-family:var(--font-mono);border:1px solid var(--line-strong);border-radius:var(--radius);padding:6px;background:#fff;color:var(--ink);}
+
+  /* ---- categories & jobs ---- */
+  .cat{border:1px solid var(--line);border-radius:var(--radius);margin-bottom:16px;background:var(--panel);overflow:hidden;}
+  .cat-head{display:flex;gap:8px;align-items:center;padding:12px;background:var(--accent-wash);border-bottom:1px solid var(--line);flex-wrap:wrap;}
+  .cat-head input{
+    flex:1 1 200px;min-width:0;font-family:var(--font-display);font-weight:700;font-size:16px;
+    color:var(--accent-deep);border:1px solid transparent;border-radius:var(--radius);
+    padding:8px;background:#fff;
+  }
+  .cat-head input:focus{border-color:var(--accent);outline:none;}
+  .jobs{padding:6px 12px 12px;}
+
+  .job{display:grid;grid-template-columns:1fr 110px 130px auto;gap:8px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line);}
+  .job:last-child{border-bottom:none;}
+  .job input{border:1px solid var(--line-strong);border-radius:var(--radius);padding:9px 10px;background:#fff;color:var(--ink);min-width:0;width:100%;}
+  .job .j-price{font-family:var(--font-mono);text-align:right;}
+  .job .j-unit{font-size:15px;}
+  @media(max-width:640px){
+    .job{grid-template-columns:1fr auto;grid-template-areas:"name del" "price unit";gap:8px;padding:14px 0;}
+    .job .j-name{grid-area:name;} .job .j-price{grid-area:price;} .job .j-unit{grid-area:unit;} .job .j-del{grid-area:del;}
+  }
+  .icon-btn{
+    background:none;border:1px solid var(--line-strong);color:var(--warn);
+    border-radius:var(--radius);cursor:pointer;padding:9px 12px;line-height:1;
+    font-size:15px;touch-action:manipulation;flex:0 0 auto;
+  }
+  .icon-btn:hover{background:var(--warn);color:#fff;border-color:var(--warn);}
+  .add{
+    font-family:var(--font-mono);font-size:13px;color:var(--accent-deep);background:none;
+    border:1px dashed var(--line-strong);border-radius:var(--radius);padding:10px 12px;
+    cursor:pointer;margin-top:10px;width:100%;touch-action:manipulation;
+  }
+  .add:hover{border-color:var(--accent);background:var(--accent-wash);}
+  .add-cat{margin-bottom:22px;}
+
+  /* ---- buttons ---- */
+  .btn{
+    font-family:var(--font-display);font-weight:600;font-size:15px;padding:12px 16px;
+    border-radius:var(--radius);cursor:pointer;border:1px solid transparent;
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;touch-action:manipulation;
+  }
+  .btn.primary{background:var(--accent);color:#fff;}
+  .btn.primary:hover{background:var(--accent-deep);}
+  .btn.ghost{background:#fff;color:var(--ink);border-color:var(--line-strong);}
+  .btn.ghost:hover{border-color:var(--ink);}
+  .btn:disabled{opacity:.45;cursor:not-allowed;}
+
+  /* ---- key panel ---- */
+  .keyrow{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:10px;}
+  .keyrow input{
+    flex:1 1 240px;min-width:0;border:1px solid var(--line-strong);border-radius:var(--radius);
+    padding:10px;font-family:var(--font-mono);font-size:16px;background:#fff;color:var(--ink);
+  }
+  ol.steps{margin:10px 0 0;padding-left:20px;font-size:13px;color:var(--ink-soft);line-height:1.7;}
+  ol.steps strong{color:var(--ink);}
+
+  /* ---- save bar ---- */
+  .savebar{
+    position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--ink);color:var(--paper);
+    padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;
+    box-shadow:0 -4px 20px rgba(0,0,0,.15);flex-wrap:wrap;
+  }
+  .savebar .sb-state{font-family:var(--font-mono);font-size:12px;color:#9fb0ac;}
+  .savebar .sb-state.dirty{color:#F0C808;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brandline">Kitchen Supplementary Work</div>
+    <h1>Price editor</h1>
+    <p>Change prices here and press Save. The live page updates about a minute later — no copying, no pasting.
+       <a id="liveLink" href="#" target="_blank" rel="noopener">View the live page</a></p>
+  </header>
+
+  <div class="status" id="status"></div>
+
+  <div id="editor" hidden>
+    <div class="card">
+      <h2>Settings</h2>
+      <label class="opt"><input type="checkbox" id="optVat"><span>Show VAT on the page<small>Unticking removes VAT entirely — from the totals, the PDF and the copied text.</small></span></label>
+      <label class="opt"><input type="checkbox" id="optVatDefault"><span>VAT starts already ticked<small>Leave off and customers see the VAT-free figure first.</small></span></label>
+      <div class="rate"><label for="vatRate">VAT rate</label><input id="vatRate" type="text" inputmode="decimal"><span>%</span></div>
+      <label class="opt" style="margin-top:8px;"><input type="checkbox" id="optSend"><span>Show the "Send this estimate to us" button<small>Save/print as PDF and Copy as text always stay.</small></span></label>
+    </div>
+
+    <div id="cats"></div>
+    <button class="add add-cat" id="addCat">+ Add a new category</button>
+
+    <div class="card">
+      <h2>Your GitHub key</h2>
+      <p class="note" id="keyState">Needed only when saving. It stays on this device and is never part of the page.</p>
+      <div class="keyrow">
+        <input id="keyInput" type="password" placeholder="Paste your key here" autocomplete="off" spellcheck="false">
+        <button class="btn ghost" id="keyForget" type="button">Forget key</button>
+      </div>
+      <details style="margin-top:12px;">
+        <summary class="note" style="cursor:pointer;">How to make a key (once, about two minutes)</summary>
+        <ol class="steps">
+          <li>Open <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">this GitHub page</a> while signed in.</li>
+          <li>Give it any name, e.g. <strong>price editor</strong>.</li>
+          <li>Expiration — pick a date, or <strong>No expiration</strong> if you'd rather not redo this.</li>
+          <li>Repository access → <strong>Only select repositories</strong> → choose <strong>kitchen-price-guide</strong>.</li>
+          <li>Permissions → Repository permissions → find <strong>Contents</strong> → set to <strong>Read and write</strong>.</li>
+          <li>Click <strong>Generate token</strong>, copy it, and paste it into the box above.</li>
+        </ol>
+        <p class="note" style="margin-top:10px;">That key can only touch this one repo, nothing else on your account. If you ever lose the device, delete the key on GitHub and it stops working immediately.</p>
+      </details>
+    </div>
+  </div>
+</div>
+
+<div class="savebar">
+  <div>
+    <div class="sb-state" id="sbState">Loading…</div>
+    <div class="sb-state" id="sbCount"></div>
+  </div>
+  <div style="display:flex;gap:8px;">
+    <button class="btn ghost" id="reloadBtn" type="button">Discard</button>
+    <button class="btn primary" id="saveBtn" type="button" disabled>Save to website</button>
+  </div>
+</div>
+
+<script>
+(function(){
+  const $ = s => document.querySelector(s);
+  const api = "https://api.github.com/repos/" + REPO.owner + "/" + REPO.name + "/contents/" + REPO.path;
+
+  let fileText = "";   // whole index.html as it is on GitHub
+  let fileSha  = "";   // blob sha, needed to commit over it
+  let cfg      = null; // the parsed price list
+  let dirty    = false;
+
+  $('#liveLink').href = REPO.live;
+
+  // ---- base64 that survives £, ² and — ----
+  function b64encode(str){
+    const bytes = new TextEncoder().encode(str);
+    let bin = '', chunk = 0x8000;
+    for (let i=0;i<bytes.length;i+=chunk) bin += String.fromCharCode.apply(null, bytes.subarray(i,i+chunk));
+    return btoa(bin);
+  }
+  function b64decode(b64){
+    const bin = atob(b64.replace(/\s/g,''));
+    const bytes = new Uint8Array(bin.length);
+    for (let i=0;i<bin.length;i++) bytes[i] = bin.charCodeAt(i);
+    return new TextDecoder().decode(bytes);
+  }
+
+  function say(msg, bad){
+    const el = $('#status');
+    el.className = 'status show ' + (bad ? 'bad' : 'info');
+    el.innerHTML = msg;
+  }
+  function clearSay(){ $('#status').className = 'status'; }
+
+  function setDirty(v){
+    dirty = v;
+    $('#sbState').textContent = v ? 'Unsaved changes' : 'Everything saved';
+    $('#sbState').classList.toggle('dirty', v);
+    $('#saveBtn').disabled = !v;
+  }
+  function countJobs(){
+    const n = cfg ? cfg.categories.reduce((t,c)=>t+c.services.length,0) : 0;
+    $('#sbCount').textContent = n + ' job' + (n!==1?'s':'') + ' in ' + (cfg?cfg.categories.length:0) + ' categories';
+  }
+
+  const storedKey = () => { try { return localStorage.getItem(KEY_STORE) || ''; } catch(e){ return ''; } };
+  function showKeyState(){
+    const has = !!storedKey();
+    $('#keyState').textContent = has
+      ? 'Key saved on this device. It is only used when you press Save.'
+      : 'Needed only when saving. It stays on this device and is never part of the page.';
+    $('#keyForget').style.display = has ? '' : 'none';
+    if (has && !$('#keyInput').value) $('#keyInput').placeholder = '•••••••••• saved';
+  }
+  $('#keyInput').addEventListener('change', e=>{
+    const v = e.target.value.trim();
+    if (!v) return;
+    try { localStorage.setItem(KEY_STORE, v); } catch(err){ say('This browser is blocking storage, so the key cannot be remembered. It will still work for this visit.', true); }
+    e.target.value = '';
+    showKeyState();
+    say('Key saved on this device.');
+  });
+  $('#keyForget').addEventListener('click', ()=>{
+    try { localStorage.removeItem(KEY_STORE); } catch(e){}
+    $('#keyInput').value = ''; $('#keyInput').placeholder = 'Paste your key here';
+    showKeyState(); say('Key removed from this device.');
+  });
+
+  // ---- load the current prices (no key needed, the repo is public) ----
+  async function load(){
+    say('Fetching your current prices…');
+    $('#saveBtn').disabled = true;
+    try{
+      const headers = { 'Accept':'application/vnd.github+json' };
+      const key = storedKey();
+      if (key) headers['Authorization'] = 'Bearer ' + key;
+      const res = await fetch(api + '?ref=' + REPO.branch + '&t=' + Date.now(), { headers, cache:'no-store' });
+      if (!res.ok) throw new Error('GitHub said ' + res.status + ' when reading the file.');
+      const data = await res.json();
+      fileSha  = data.sha;
+      fileText = b64decode(data.content);
+      cfg = parseBlock(fileText);
+      render();
+      $('#editor').hidden = false;
+      setDirty(false);
+      countJobs();
+      clearSay();
+    } catch(err){
+      say('Could not load your prices. ' + err.message + '<br>Check you are online, then reload this page.', true);
+      $('#sbState').textContent = 'Not loaded';
+    }
+  }
+
+  // The marker text also appears later inside index.html's own export code, so always
+  // take the FIRST start marker and the first end marker that follows it.
+  function parseBlock(text){
+    const a = text.indexOf(MARK_START), b = text.indexOf(MARK_END, a);
+    if (a === -1 || b === -1) throw new Error('The price markers are missing from index.html.');
+    const inner = text.slice(a + MARK_START.length, b).trim();
+    const m = inner.match(/^const\s+CONFIG\s*=\s*([\s\S]*?);?$/);
+    if (!m) throw new Error('The price block is not in the expected shape.');
+    return JSON.parse(m[1]);
+  }
+  function rebuild(text, config){
+    const a = text.indexOf(MARK_START), b = text.indexOf(MARK_END, a);
+    const block = MARK_START + '\nconst CONFIG = ' + JSON.stringify(config, null, 2) + ';\n';
+    return text.slice(0, a) + block + text.slice(b);
+  }
+
+  // ---- drawing the form ----
+  function render(){
+    $('#optVat').checked        = cfg.showVat !== false;
+    $('#optSend').checked       = cfg.showSendButton !== false;
+    $('#optVatDefault').checked = !!(cfg.vat && cfg.vat.enabled);
+    $('#vatRate').value         = (cfg.vat && cfg.vat.rate != null) ? cfg.vat.rate : 20;
+
+    const host = $('#cats');
+    host.innerHTML = '';
+    cfg.categories.forEach((cat, ci) => {
+      const box = document.createElement('div');
+      box.className = 'cat';
+
+      const head = document.createElement('div');
+      head.className = 'cat-head';
+      const nameIn = document.createElement('input');
+      nameIn.value = cat.name;
+      nameIn.setAttribute('aria-label','Category name');
+      nameIn.addEventListener('input', e=>{ cat.name = e.target.value; setDirty(true); });
+      const delBtn = document.createElement('button');
+      delBtn.className = 'icon-btn'; delBtn.type = 'button';
+      delBtn.textContent = 'Delete category';
+      delBtn.addEventListener('click', ()=>{
+        if (!confirm('Delete "' + cat.name + '" and all ' + cat.services.length + ' jobs in it?')) return;
+        cfg.categories.splice(ci,1); render(); setDirty(true); countJobs();
+      });
+      head.appendChild(nameIn); head.appendChild(delBtn);
+      box.appendChild(head);
+
+      const jobs = document.createElement('div');
+      jobs.className = 'jobs';
+      cat.services.forEach((svc, si) => {
+        const row = document.createElement('div');
+        row.className = 'job';
+
+        const nm = document.createElement('input');
+        nm.className = 'j-name'; nm.value = svc.name; nm.placeholder = 'Job name';
+        nm.setAttribute('aria-label','Job name');
+        nm.addEventListener('input', e=>{ svc.name = e.target.value; setDirty(true); });
+
+        const pr = document.createElement('input');
+        pr.className = 'j-price'; pr.type = 'text'; pr.inputMode = 'decimal'; pr.value = svc.price;
+        pr.setAttribute('aria-label','Price');
+        pr.addEventListener('input', e=>{
+          svc.price = parseFloat(e.target.value.replace(/[^\d.]/g,'')) || 0; setDirty(true);
+        });
+
+        const un = document.createElement('input');
+        un.className = 'j-unit'; un.value = svc.unit; un.placeholder = 'per m², each…';
+        un.setAttribute('aria-label','Unit');
+        un.addEventListener('input', e=>{ svc.unit = e.target.value; setDirty(true); });
+
+        const dl = document.createElement('button');
+        dl.className = 'icon-btn j-del'; dl.type = 'button'; dl.textContent = 'Remove';
+        dl.addEventListener('click', ()=>{
+          if (!confirm('Remove "' + svc.name + '"?')) return;
+          cat.services.splice(si,1); render(); setDirty(true); countJobs();
+        });
+
+        row.append(nm, pr, un, dl);
+        jobs.appendChild(row);
+      });
+
+      const addJob = document.createElement('button');
+      addJob.className = 'add'; addJob.type = 'button';
+      addJob.textContent = '+ Add a job to ' + cat.name;
+      addJob.addEventListener('click', ()=>{
+        cat.services.push({ id:'svc-'+Math.random().toString(36).slice(2,7), name:'New job', price:0, unit:'each', qty:true });
+        render(); setDirty(true); countJobs();
+      });
+      jobs.appendChild(addJob);
+      box.appendChild(jobs);
+      host.appendChild(box);
+    });
+  }
+
+  // ---- settings wiring ----
+  $('#optVat').addEventListener('change', e=>{
+    cfg.showVat = e.target.checked;
+    if (e.target.checked && !cfg.vat) cfg.vat = { enabled:false, rate:20, label:'VAT' };
+    setDirty(true);
+  });
+  $('#optSend').addEventListener('change', e=>{ cfg.showSendButton = e.target.checked; setDirty(true); });
+  $('#optVatDefault').addEventListener('change', e=>{
+    if (!cfg.vat) cfg.vat = { enabled:false, rate:20, label:'VAT' };
+    cfg.vat.enabled = e.target.checked; setDirty(true);
+  });
+  $('#vatRate').addEventListener('input', e=>{
+    if (!cfg.vat) cfg.vat = { enabled:false, rate:20, label:'VAT' };
+    cfg.vat.rate = parseFloat(e.target.value.replace(/[^\d.]/g,'')) || 0; setDirty(true);
+  });
+  $('#addCat').addEventListener('click', ()=>{
+    cfg.categories.push({ name:'New category', services:[
+      { id:'svc-'+Math.random().toString(36).slice(2,7), name:'New job', price:0, unit:'each', qty:true }
+    ]});
+    render(); setDirty(true); countJobs();
+    window.scrollTo({ top: document.body.scrollHeight, behavior:'smooth' });
+  });
+
+  $('#reloadBtn').addEventListener('click', ()=>{
+    if (dirty && !confirm('Throw away your unsaved changes and reload what is on the website?')) return;
+    load();
+  });
+
+  // ---- saving ----
+  $('#saveBtn').addEventListener('click', async ()=>{
+    const key = storedKey() || $('#keyInput').value.trim();
+    if (!key){
+      say('Paste your GitHub key into the box further down, then press Save again.', true);
+      $('#keyInput').scrollIntoView({behavior:'smooth', block:'center'});
+      $('#keyInput').focus();
+      return;
+    }
+    const btn = $('#saveBtn');
+    btn.disabled = true; btn.textContent = 'Saving…';
+    say('Sending your changes to GitHub…');
+    try{
+      const updated = rebuild(fileText, cfg);
+      const res = await fetch(api, {
+        method:'PUT',
+        headers:{
+          'Authorization':'Bearer ' + key,
+          'Accept':'application/vnd.github+json',
+          'X-GitHub-Api-Version':'2022-11-28',
+          'Content-Type':'application/json'
+        },
+        body: JSON.stringify({
+          message: 'Update prices from the price editor',
+          content: b64encode(updated),
+          sha: fileSha,
+          branch: REPO.branch
+        })
+      });
+      const out = await res.json();
+      if (!res.ok) throw Object.assign(new Error(out.message || ('GitHub said ' + res.status)), { code: res.status });
+
+      fileText = updated;
+      fileSha  = out.content.sha;
+      setDirty(false);
+      say('Saved. The live page will show your new prices in about a minute — ' +
+          '<a href="' + REPO.live + '" target="_blank" rel="noopener">open it</a> and pull down to refresh if it still looks old.');
+    } catch(err){
+      let msg = err.message;
+      if (err.code === 401) msg = 'That key was not accepted. It may be wrong, or deleted on GitHub.';
+      if (err.code === 403) msg = 'That key does not have permission to write to this repo. Check it has Contents set to Read and write.';
+      if (err.code === 409 || /does not match/i.test(err.message))
+        msg = 'The file changed on GitHub since this page loaded. Press Discard to pull in the latest, then redo your change.';
+      say('Not saved. ' + msg, true);
+      setDirty(true);
+    } finally {
+      btn.textContent = 'Save to website';
+      btn.disabled = !dirty;
+    }
+  });
+
+  window.addEventListener('beforeunload', e=>{
+    if (dirty){ e.preventDefault(); e.returnValue = ''; }
+  });
+
+  showKeyState();
+  load();
+})();
+</script>
+</body>
+</html>
