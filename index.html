@@ -597,21 +597,6 @@ const CONFIG = {
   }
   .disclaim{font-size:11px;color:var(--ink-soft);margin-top:16px;line-height:1.45;border-top:1px solid var(--line);padding-top:12px;}
 
-  /* ---- Hidden categories (revealed by the secret code) ---- */
-  .cat-secret{
-    border:1px dashed var(--line-strong);
-    border-radius:var(--radius);
-    padding:14px 14px 4px;
-    margin-top:26px;
-    background:var(--panel);
-  }
-  .cat-secret > h2{border-bottom-color:var(--line-strong);}
-  .cat-tag{
-    font-family:var(--font-mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;
-    color:var(--warn);background:var(--warn-wash);border:1px solid #e2b8a8;
-    border-radius:99px;padding:2px 9px;white-space:nowrap;
-  }
-
   /* mobile sticky total */
   .mbar{display:none;}
   @media(max-width:860px){
@@ -756,25 +741,37 @@ const CONFIG = {
 
   function hiddenCats(){ return Array.isArray(CONFIG.hiddenCategories) ? CONFIG.hiddenCategories : []; }
 
+  // A whole category or a single job can carry hidden:true. Those are left out for
+  // ordinary customers and folded back in once the code has been entered. Revealed
+  // items look exactly like the rest — nothing marks them out on the page.
+  function shownCats(){
+    const out = [];
+    CONFIG.categories.forEach(cat => {
+      if (cat.hidden && !unlocked) return;
+      const svcs = cat.services.filter(s => unlocked || !s.hidden);
+      if (svcs.length) out.push([cat, svcs]);
+    });
+    // older price lists kept hidden jobs in a separate array
+    if (unlocked) hiddenCats().forEach(cat => { if (cat.services.length) out.push([cat, cat.services]); });
+    return out;
+  }
+
   function render(){
     const wrap = $('#services');
     wrap.innerHTML = '';
-    CONFIG.categories.forEach(cat => wrap.appendChild(catBlock(cat, false)));
-    if (unlocked) hiddenCats().forEach(cat => wrap.appendChild(catBlock(cat, true)));
+    shownCats().forEach(pair => wrap.appendChild(catBlock(pair[0], pair[1])));
   }
 
-  function catBlock(cat, isHidden){
+  function catBlock(cat, svcs){
     const block = document.createElement('div');
-    block.className = 'cat' + (isHidden ? ' cat-secret' : '');
+    block.className = 'cat';
 
     const h = document.createElement('h2');
     h.innerHTML = '<span>' + esc(cat.name) + '</span>' +
-      (isHidden
-        ? '<span class="cat-tag">Hidden from customers</span>'
-        : '<span class="cat-count">' + cat.services.length + ' item' + (cat.services.length!==1?'s':'') + '</span>');
+      '<span class="cat-count">' + svcs.length + ' item' + (svcs.length!==1?'s':'') + '</span>';
     block.appendChild(h);
 
-    cat.services.forEach(svc => {
+    svcs.forEach(svc => {
       meta[svc.id] = svc;
       const row = document.createElement('div');
       row.className = 'row' + (state[svc.id] ? ' on' : '');
@@ -1038,12 +1035,12 @@ const CONFIG = {
 
   function revealHidden(){
     if (unlocked) return;
+    const n = CONFIG.categories.reduce((t,c)=>
+                t + (c.hidden ? c.services.length : c.services.filter(s=>s.hidden).length), 0)
+            + hiddenCats().reduce((t,c)=>t+c.services.length,0);
     unlocked = true;
     render(); recompute();
-    const n = hiddenCats().reduce((t,c)=>t+c.services.length,0);
     toast(n ? 'Extra prices unlocked' : 'No extra prices set up yet');
-    const first = document.querySelector('.cat-secret');
-    if (first) first.scrollIntoView({behavior:'smooth', block:'start'});
   }
   // also available at yourpage.html#edit on your own device
   if (location.hash.toLowerCase() === '#edit') revealHidden();
