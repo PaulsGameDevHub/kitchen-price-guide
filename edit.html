@@ -189,6 +189,7 @@ const KEY_STORE  = "kpg-github-key";
   <div>
     <div class="sb-state" id="sbState">Loading…</div>
     <div class="sb-state" id="sbCount"></div>
+    <div class="sb-state" id="sbKey"></div>
   </div>
   <div style="display:flex;gap:8px;">
     <button class="btn ghost" id="reloadBtn" type="button">Discard</button>
@@ -222,10 +223,13 @@ const KEY_STORE  = "kpg-github-key";
     return new TextDecoder().decode(bytes);
   }
 
-  function say(msg, bad){
+  // bring=true scrolls the message into view. The Save button sits at the bottom of a long
+  // page, so without this a save result can land off-screen and look like nothing happened.
+  function say(msg, bad, bring){
     const el = $('#status');
     el.className = 'status show ' + (bad ? 'bad' : 'info');
     el.innerHTML = msg;
+    if (bring) el.scrollIntoView({ behavior:'smooth', block:'center' });
   }
   function clearSay(){ $('#status').className = 'status'; }
 
@@ -248,6 +252,9 @@ const KEY_STORE  = "kpg-github-key";
       : 'Needed only when saving. It stays on this device and is never part of the page.';
     $('#keyForget').style.display = has ? '' : 'none';
     if (has && !$('#keyInput').value) $('#keyInput').placeholder = '•••••••••• saved';
+    const sk = $('#sbKey');
+    sk.textContent = has ? 'Key saved' : 'No key yet — needed to save';
+    sk.classList.toggle('dirty', !has);
   }
   $('#keyInput').addEventListener('change', e=>{
     const v = e.target.value.trim();
@@ -443,15 +450,15 @@ const KEY_STORE  = "kpg-github-key";
       fileText = updated;
       fileSha  = out.content.sha;
       setDirty(false);
-      say('Saved. The live page will show your new prices in about a minute — ' +
-          '<a href="' + REPO.live + '" target="_blank" rel="noopener">open it</a> and pull down to refresh if it still looks old.');
+      say('<strong>Saved.</strong> The live page will show your new prices in about a minute — ' +
+          '<a href="' + REPO.live + '" target="_blank" rel="noopener">open it</a> and pull down to refresh if it still looks old.', false, true);
     } catch(err){
       let msg = err.message;
       if (err.code === 401) msg = 'That key was not accepted. It may be wrong, or deleted on GitHub.';
       if (err.code === 403) msg = 'That key does not have permission to write to this repo. Check it has Contents set to Read and write.';
       if (err.code === 409 || /does not match/i.test(err.message))
         msg = 'The file changed on GitHub since this page loaded. Press Discard to pull in the latest, then redo your change.';
-      say('Not saved. ' + msg, true);
+      say('<strong>Not saved.</strong> ' + msg, true, true);
       setDirty(true);
     } finally {
       btn.textContent = 'Save to website';
