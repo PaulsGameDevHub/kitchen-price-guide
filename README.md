@@ -24,13 +24,22 @@ commits the change to this repo for you; the live page follows about a minute
 later. It reads the current prices with no key needed — a key is only required to
 save. See "The editor's GitHub key" below.
 
-The editor has two tabs:
+## Hiding prices from customers
 
-- **Customer prices** (`CONFIG.categories`) — everyone sees these.
-- **Hidden prices** (`CONFIG.hiddenCategories`) — these appear on the price guide
-  only after the unlock code is typed into the Name and Phone boxes, or with
-  `#edit` on the end of the address. Once revealed they behave like any other
-  job: tickable, counted in the total, and included on the PDF and the email.
+Every category and every job in the editor has a **Hide** tick.
+
+- Tick **Hide all** on a category and the whole thing disappears for customers.
+- Tick **Hide** on a single job and just that job goes, with its category still shown.
+- A category with all its jobs hidden is left out entirely rather than shown empty.
+
+Hidden things come back for you when the unlock code is typed into the Name and Phone
+boxes on the price guide, or with `#edit` on the end of the address. Once revealed they
+look and behave exactly like any other job — nothing on the page marks them out, so the
+guide can be shown to a customer with the code entered.
+
+In the file this is a `"hidden": true` flag on a category or a job. Older lists kept a
+separate `hiddenCategories` array; the editor folds those into the main list on load, so
+the next save clears the old format automatically.
 
 The unlock code lives in `CONFIG.editUnlock`. It is obfuscation, not security —
 anyone reading the page source can find both the code and the hidden prices.
