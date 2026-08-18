@@ -275,10 +275,18 @@ const KEY_STORE  = "kpg-github-key";
     say('Fetching your current prices…');
     $('#saveBtn').disabled = true;
     try{
-      const headers = { 'Accept':'application/vnd.github+json' };
+      const url = api + '?ref=' + REPO.branch + '&t=' + Date.now();
+      const plain = { 'Accept':'application/vnd.github+json' };
       const key = storedKey();
-      if (key) headers['Authorization'] = 'Bearer ' + key;
-      const res = await fetch(api + '?ref=' + REPO.branch + '&t=' + Date.now(), { headers, cache:'no-store' });
+      let badKey = false;
+
+      let res = await fetch(url, { headers: key ? Object.assign({ 'Authorization':'Bearer ' + key }, plain) : plain, cache:'no-store' });
+      // A bad saved key makes even a public repo answer 401/403. Read it anonymously
+      // instead so a wrong key never leaves this page stuck on an error.
+      if (!res.ok && key && (res.status === 401 || res.status === 403)){
+        badKey = true;
+        res = await fetch(url, { headers: plain, cache:'no-store' });
+      }
       if (!res.ok) throw new Error('GitHub said ' + res.status + ' when reading the file.');
       const data = await res.json();
       fileSha  = data.sha;
@@ -288,7 +296,13 @@ const KEY_STORE  = "kpg-github-key";
       $('#editor').hidden = false;
       setDirty(false);
       countJobs();
-      clearSay();
+      if (badKey){
+        say('Your prices loaded, but the key saved on this device was <strong>rejected by GitHub</strong>, ' +
+            'so saving will not work yet. Delete that key on GitHub, make a new one, and paste it into ' +
+            'the box lower down. Check it has <strong>Contents: Read and write</strong> on this repository.', true);
+      } else {
+        clearSay();
+      }
     } catch(err){
       say('Could not load your prices. ' + err.message + '<br>Check you are online, then reload this page.', true);
       $('#sbState').textContent = 'Not loaded';
