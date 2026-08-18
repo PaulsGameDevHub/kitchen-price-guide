@@ -85,16 +85,26 @@ const KEY_STORE  = "kpg-github-key";
   .cat-head input:focus{border-color:var(--accent);outline:none;}
   .jobs{padding:6px 12px 12px;}
 
-  .job{display:grid;grid-template-columns:1fr 100px 120px auto auto;gap:8px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line);}
+  .job{display:grid;grid-template-columns:1fr 100px 120px auto auto auto;gap:8px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line);}
   .job:last-child{border-bottom:none;}
   .job input{border:1px solid var(--line-strong);border-radius:var(--radius);padding:9px 10px;background:#fff;color:var(--ink);min-width:0;width:100%;}
   .job .j-price{font-family:var(--font-mono);text-align:right;}
   .job .j-unit{font-size:16px;}  /* 16px minimum or iOS zooms the page on tap */
   @media(max-width:640px){
-    .job{grid-template-columns:1fr auto auto;grid-template-areas:"name name del" "price unit hide";gap:8px;padding:14px 0;}
+    .job{grid-template-columns:1fr auto auto;grid-template-areas:"name move del" "price unit hide";gap:8px;padding:14px 0;}
     .job .j-name{grid-area:name;} .job .j-price{grid-area:price;} .job .j-unit{grid-area:unit;}
-    .job .j-hide{grid-area:hide;} .job .j-del{grid-area:del;}
+    .job .j-hide{grid-area:hide;} .job .j-del{grid-area:del;} .job .j-move{grid-area:move;}
   }
+
+  /* ---- move up / down ---- */
+  .move{display:flex;gap:4px;flex:0 0 auto;}
+  .move button{
+    border:1px solid var(--line-strong);background:#fff;color:var(--ink);
+    border-radius:var(--radius);cursor:pointer;padding:8px 11px;line-height:1;
+    font-size:13px;touch-action:manipulation;
+  }
+  .move button:hover:not(:disabled){border-color:var(--ink);background:var(--accent-wash);}
+  .move button:disabled{opacity:.28;cursor:not-allowed;}
 
   /* ---- hide ticks ---- */
   .hide-tick{
@@ -369,6 +379,35 @@ const KEY_STORE  = "kpg-github-key";
     return text.slice(0, a) + block + text.slice(b);
   }
 
+  // ---- reordering ----
+  // Builds the ▲▼ pair. `after` runs once the list has been redrawn, so the thing
+  // you just moved can be scrolled back under your finger.
+  function moveButtons(list, i, label, after){
+    const box = document.createElement('div');
+    box.className = 'move';
+    [['▲',-1,'Move ' + label + ' up'], ['▼',1,'Move ' + label + ' down']].forEach(spec => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.textContent = spec[0];
+      b.title = spec[2];
+      b.setAttribute('aria-label', spec[2]);
+      b.disabled = (i + spec[1] < 0) || (i + spec[1] >= list.length);
+      b.addEventListener('click', ()=>{
+        const j = i + spec[1];
+        if (j < 0 || j >= list.length) return;
+        list.splice(j, 0, list.splice(i, 1)[0]);
+        render(); setDirty(true); countJobs();
+        if (after) after(j);
+      });
+      box.appendChild(b);
+    });
+    return box;
+  }
+  function bringIntoView(sel){
+    const el = document.querySelector(sel);
+    if (el) el.scrollIntoView({ block:'center' });
+  }
+
   // ---- drawing the form ----
   function render(){
     $('#optVat').checked        = cfg.showVat !== false;
@@ -382,6 +421,7 @@ const KEY_STORE  = "kpg-github-key";
     list.forEach((cat, ci) => {
       const box = document.createElement('div');
       box.className = 'cat' + (cat.hidden ? ' is-hidden' : '');
+      box.dataset.pos = ci;
 
       const head = document.createElement('div');
       head.className = 'cat-head';
@@ -408,7 +448,8 @@ const KEY_STORE  = "kpg-github-key";
         if (!confirm('Delete "' + cat.name + '" and all ' + cat.services.length + ' jobs in it?')) return;
         list.splice(ci,1); render(); setDirty(true); countJobs();
       });
-      head.append(nameIn, hideLbl, delBtn);
+      const catMove = moveButtons(list, ci, 'category', j => bringIntoView('.cat[data-pos="'+j+'"]'));
+      head.append(nameIn, catMove, hideLbl, delBtn);
       box.appendChild(head);
 
       const jobs = document.createElement('div');
@@ -417,6 +458,7 @@ const KEY_STORE  = "kpg-github-key";
         const row = document.createElement('div');
         // a job counts as hidden if its own tick is on, or the whole category is hidden
         row.className = 'job' + ((cat.hidden || svc.hidden) ? ' is-hidden' : '');
+        row.dataset.id = svc.id;
 
         const nm = document.createElement('input');
         nm.className = 'j-name'; nm.value = svc.name; nm.placeholder = 'Job name';
@@ -458,7 +500,10 @@ const KEY_STORE  = "kpg-github-key";
           cat.services.splice(si,1); render(); setDirty(true); countJobs();
         });
 
-        row.append(nm, pr, un, hideLbl, dl);
+        const jobMove = moveButtons(cat.services, si, 'job', ()=>bringIntoView('.job[data-id="'+svc.id+'"]'));
+        jobMove.classList.add('j-move');
+
+        row.append(nm, pr, un, jobMove, hideLbl, dl);
         jobs.appendChild(row);
       });
 
