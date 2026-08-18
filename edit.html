@@ -91,9 +91,16 @@ const KEY_STORE  = "kpg-github-key";
   .job .j-price{font-family:var(--font-mono);text-align:right;}
   .job .j-unit{font-size:16px;}  /* 16px minimum or iOS zooms the page on tap */
   @media(max-width:640px){
-    .job{grid-template-columns:1fr auto auto;grid-template-areas:"name move del" "price unit hide";gap:8px;padding:14px 0;}
+    /* Name must span two columns — on its own in a 1fr track the auto columns
+       squeeze it down to nothing. */
+    .job{
+      grid-template-columns:1fr auto auto;
+      grid-template-areas:"name name del" "price unit hide" "move move move";
+      gap:8px;padding:14px 0;
+    }
     .job .j-name{grid-area:name;} .job .j-price{grid-area:price;} .job .j-unit{grid-area:unit;}
-    .job .j-hide{grid-area:hide;} .job .j-del{grid-area:del;} .job .j-move{grid-area:move;}
+    .job .j-hide{grid-area:hide;} .job .j-del{grid-area:del;}
+    .job .j-move{grid-area:move;justify-self:start;}
   }
 
   /* ---- move up / down ---- */
