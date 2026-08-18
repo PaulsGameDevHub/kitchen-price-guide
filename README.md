@@ -16,16 +16,24 @@ No browser storage is used.
 
 ## Changing the prices
 
+**Easiest — the price editor:**
+<https://paulsgamedevhub.github.io/kitchen-price-guide/edit.html>
+
+Change prices, add or remove jobs and categories, press **Save to website**. It
+commits the change to this repo for you; the live page follows about a minute
+later. It reads the current prices with no key needed — a key is only required to
+save. See "The editor's GitHub key" below.
+
 Prices live in a single `CONFIG` block near the top of `index.html`, between the
-`/* === PRICE LIST START === */` and `/* === PRICE LIST END === */` markers.
+`/* === PRICE LIST START === */` and `/* === PRICE LIST END === */` markers. The
+editor swaps that block and leaves the rest of the file untouched.
 
-Two ways to change them:
+Other ways, if ever needed:
 
-1. **In the browser.** Edit prices, job names, units and categories on the page,
-   then use the export button to produce a replacement for that block. Paste it
-   over the old block and commit.
-2. **Directly on GitHub.** Open `index.html`, click the pencil icon, edit, commit.
-   The live page updates about a minute later.
+- **Directly on GitHub.** Open `index.html`, click the pencil icon, edit the price
+  block, commit.
+- **The in-page editor on the guide itself.** Edits there live only in the browser
+  and change nothing for customers until you export the block and commit it by hand.
 
 From this machine:
 
@@ -34,6 +42,16 @@ git -C "D:\GamesFromAi\KitchenPriceGuide" add -A
 git -C "D:\GamesFromAi\KitchenPriceGuide" commit -m "Update prices"
 git -C "D:\GamesFromAi\KitchenPriceGuide" push origin main
 ```
+
+## The editor's GitHub key
+
+`edit.html` writes to this repo through the GitHub API using a fine-grained personal
+access token, scoped to **this repository only** with **Contents: Read and write**.
+
+The token is never in the source. It is typed in by hand and kept in that device's
+browser storage under `kpg-github-key`. The editor page is publicly reachable, but
+without a token it can only read what is already public. If a device is lost, delete
+the token on GitHub and the page becomes read-only again immediately.
 
 ## Sending estimates
 
